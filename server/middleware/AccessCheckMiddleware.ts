@@ -1,6 +1,8 @@
+export {};
+
 const jwt = require('jsonwebtoken')
-const AccessLevel = require("#server/common/AccessLevel.js")
-const security_constants = require("#server/common/SecurityConstants.js")
+const AccessLevel = require("../common/AccessLevel.ts")
+const security_constants = require("../common/SecurityConstants.ts")
 
 /**
  * Проверить права доступа клиента
@@ -8,8 +10,8 @@ const security_constants = require("#server/common/SecurityConstants.js")
  * @param {*} res Тело ответа
  * @param {*} next Вызов следующего коллбека при подходящем доступе
  */
-function VerifyRegistrationRequest (accessLevelRequired) {
-     return function (req, res, next) 
+function VerifyRegistrationRequest (accessLevelRequired : typeof AccessLevel) {
+     return function (req : any, res : any, next : any) 
      {
           try {
                const authHeader = req.headers.authorization

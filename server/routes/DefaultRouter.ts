@@ -1,6 +1,8 @@
+export {};
+
 const Router = require("express")
 const router = new Router()
-const controller = require("#server/controllers/DefaultController.js")
+const controller = require("../controllers/DefaultController.ts")
 
 router.get("/", controller.SayHello)
 

@@ -1,7 +1,9 @@
+export {};
+
 const Router = require("express")
 const router = new Router()
-const controller = require("#server/controllers/AccountController.js")
-const registrationMiddleware = require("#server/middleware/RegistrationMiddleware.js")
+const controller = require("../controllers/AccountController.ts")
+const registrationMiddleware = require("../middleware/RegistrationMiddleware.ts")
 
 router.post("/registration", registrationMiddleware, controller.RegisterAccount)
 router.get("/login", controller.LogIn)

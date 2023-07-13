@@ -1,3 +1,5 @@
+export {};
+
 const jwt = require("jsonwebtoken")
 const validationResult = require('express-validator')
 const bcrypt = require('bcryptjs')
@@ -12,7 +14,7 @@ const maxPasswordLength = 20 ///< Максимальная длина парол
  * @param {String} login Логин пользователя
  * @returns Результат проверки (true/false)
  */
-function IsValidLogin (login)
+function IsValidLogin (login : String)
 {
      if (minLoginLength <= login.length && login.length  <= maxLoginLength)
      {
@@ -26,7 +28,7 @@ function IsValidLogin (login)
  * @param {String} plainPassword Незахешированный пароль в строковом виде
  * @returns Результат проверки (true/false)
  */
-function IsValidPassword (plainPassword)
+function IsValidPassword (plainPassword : String)
 {
      if (minPasswordLength <= plainPassword.length && plainPassword.length  <= maxPasswordLength)
      {
@@ -41,7 +43,7 @@ function IsValidPassword (plainPassword)
  * @param {*} res Ответ
  * @param {*} next Вызов следующего коллбека из массива
  */
-function VerifyRegistrationRequest (req, res, next) {
+function VerifyRegistrationRequest (req : any, res : any, next : any) {
      try {          
           if (req.body == null){
                return res.status(403).json({message: "Пустое тело запроса "})

@@ -1,6 +1,7 @@
 /**
  * Логер для печати в файл
 */
+export {};
 
 const winston = require("winston");
 

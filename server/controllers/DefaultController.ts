@@ -1,5 +1,5 @@
 class DefaultController {
-     async SayHello(req, res){
+     async SayHello(req : any, res : any){
           try {
                res.send("Info portal working as intended!")
           } 

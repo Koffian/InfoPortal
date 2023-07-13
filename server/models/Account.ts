@@ -1,3 +1,5 @@
+export {};
+
 const {Schema, model} = require('mongoose')
 
 const Account = new Schema({

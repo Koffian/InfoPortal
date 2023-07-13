@@ -1,9 +1,11 @@
-const Account = require("#server/models/Account.js")
-const AccessLevel = require("#server/common/AccessLevel.js")
+export {};
+
+const Account = require("../models/Account.ts")
+const AccessLevel = require("../common/AccessLevel.ts")
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const security_constants = require("#server/common/SecurityConstants.js")
-const Logger = require("#server/common/Logger.js")
+const security_constants = require("../common/SecurityConstants.ts")
+const Logger = require("../common/Logger.ts")
 
 /**
  * Генерация токена доступа пользователя
@@ -11,7 +13,7 @@ const Logger = require("#server/common/Logger.js")
  * @param {*} accessLevel Уровень доступа пользователя
  * @returns Подписанный токен
  */
-const generateAccessToken = (id, accessLevel) => {
+const generateAccessToken = (id : Number, accessLevel : Number) => {
      const payload = {
          id,
          accessLevel,
@@ -32,7 +34,7 @@ class AccountController
       * @param {*} res Тело ответа
       * @returns Респонс с кодом 201 при успешном добавлении, коды 400-403 при ошибках
       */
-     async RegisterAccount(req, res) {
+     async RegisterAccount(req : any, res : any) {
           try 
           {
                const {username, password} = req.body
@@ -59,7 +61,7 @@ class AccountController
       * @param {*} res Тело ответа
       * @returns Респонс с токеном и кодом 200 при успешном логине, коды ~400 при ошибках
       */
-     async LogIn(req, res) {
+     async LogIn(req : any, res : any) {
           try {
                const {username, password} = req.body
                const account = await Account.findOne({username})
@@ -88,7 +90,7 @@ class AccountController
       * @param {*} req Тело запроса
       * @param {*} res Тело ответа
       */
-     async GetAccounts(req, res) {
+     async GetAccounts(req : any, res : any) {
           try {
                Logger.info("Администратор получает список пользователей")
                const users = await Account.find()
