@@ -1,12 +1,10 @@
-export {};
+import { Router } from "express"
+import { controller } from "../controllers/AccountController"
+import AccessCheckMiddleware  from "../middleware/AccessCheckMiddleware"
+import AccessLevel from "../common/AccessLevel"
 
-const Router = require("express")
-const router = new Router()
-const accountController = require("../controllers/AccountController.ts")
-const accessCheckMiddleware = require("../middleware/AccessCheckMiddleware.ts")
-const AccessLevel = require("../common/AccessLevel.ts")
+const router = Router()
 
+router.get("/accounts", AccessCheckMiddleware(AccessLevel.Administrator), controller.GetAccounts)
 
-router.get("/accounts", accessCheckMiddleware(AccessLevel.Administrator), accountController.GetAccounts)
-
-module.exports = router
+export {router as adminRouter}

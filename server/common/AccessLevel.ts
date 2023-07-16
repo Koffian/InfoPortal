@@ -8,4 +8,4 @@ const AccessLevel = {
 	Banned: 3           ///< Забанен
 }
 
-module.exports = AccessLevel
+export default AccessLevel

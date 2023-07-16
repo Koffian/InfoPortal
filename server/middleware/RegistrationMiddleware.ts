@@ -1,5 +1,3 @@
-export {};
-
 const jwt = require("jsonwebtoken")
 const validationResult = require('express-validator')
 const bcrypt = require('bcryptjs')
@@ -43,7 +41,7 @@ function IsValidPassword (plainPassword : String)
  * @param {*} res Ответ
  * @param {*} next Вызов следующего коллбека из массива
  */
-function VerifyRegistrationRequest (req : any, res : any, next : any) {
+function RegistrationMiddleware (req : any, res : any, next : any) {
      try {          
           if (req.body == null){
                return res.status(403).json({message: "Пустое тело запроса "})
@@ -71,4 +69,4 @@ function VerifyRegistrationRequest (req : any, res : any, next : any) {
      }
 }
 
-module.exports = VerifyRegistrationRequest
+export default RegistrationMiddleware

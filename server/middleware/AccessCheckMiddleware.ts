@@ -1,8 +1,8 @@
-export {};
+import jwt from "jsonwebtoken"
+import security_constants from "../common/SecurityConstants"
 
-const jwt = require('jsonwebtoken')
-const AccessLevel = require("../common/AccessLevel.ts")
-const security_constants = require("../common/SecurityConstants.ts")
+// import { AccessLevel } from "../common/AccessLevel"
+// import { json } from "body-parser"
 
 /**
  * Проверить права доступа клиента
@@ -10,7 +10,7 @@ const security_constants = require("../common/SecurityConstants.ts")
  * @param {*} res Тело ответа
  * @param {*} next Вызов следующего коллбека при подходящем доступе
  */
-function VerifyRegistrationRequest (accessLevelRequired : typeof AccessLevel) {
+function AccessCheckMiddleware (accessLevelRequired : Number) {
      return function (req : any, res : any, next : any) 
      {
           try {
@@ -23,23 +23,24 @@ function VerifyRegistrationRequest (accessLevelRequired : typeof AccessLevel) {
                     return res.status(403).json({error: {message: "Отсутствует токен авторизации"}})
                }
 
-               const decodedPayload = jwt.verify(authToken, security_constants.tokenSecret)
+               ///@todo Заменить any на настоящий тип: jwt.JwtPayload | string
+               const decodedPayload: any = jwt.verify(authToken, security_constants.tokenSecret)
 
                if (decodedPayload.accessLevel != accessLevelRequired)
                {
-                    console.log("Несоответствующий уровень доступа")
+                    console.log("Несоответствующий уровень доступа: " + decodedPayload.accessLevel + " != " + accessLevelRequired)
                     return res.status(401).json({error: {message: "Несоответствующий уровень доступа"}})
                }
                next()
           }
           catch (e) {
-               console.log("Ошибка проверки уровня доступа:" + e)
+               console.log("Ошибка проверки уровня доступа: " + e)
                if (e instanceof jwt.JsonWebTokenError) {
-                    return res.status(400).json({error: {message: "Невалидный токен"}})
+                    return res.status(400).json({error: {message: "Невалидный токен " + e}})
                }
                return res.status(400).json({error: {message: "Ошибка проверки уровня доступа"}})
           }
      }
 }
 
-module.exports = VerifyRegistrationRequest
+export default AccessCheckMiddleware

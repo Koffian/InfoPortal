@@ -1,8 +1,7 @@
-export {};
+import {Schema} from 'mongoose'
+import { connection } from '../mongoConnection'
 
-const {Schema, model} = require('mongoose')
-
-const Account = new Schema({
+const AccountSchema = new Schema({
      username: {type: String, unique: true, required: true},
      password: {type: String, required: true},
      access: {type: Number, ref: 'AccessLevel'},
@@ -10,4 +9,5 @@ const Account = new Schema({
      mutedUntil: {type: Date}
 })
 
-module.exports = model('Account', Account)
+const Account = connection.model("Account", AccountSchema)
+export default Account

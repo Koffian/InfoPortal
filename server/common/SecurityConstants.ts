@@ -8,4 +8,4 @@ const security_constants = {
 }
  
  
- module.exports = security_constants
+export default security_constants

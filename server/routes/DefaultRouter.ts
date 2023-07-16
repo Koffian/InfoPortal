@@ -1,9 +1,8 @@
-export {};
+import { Router } from "express"
+import { controller } from "../controllers/DefaultController"
 
-const Router = require("express")
-const router = new Router()
-const controller = require("../controllers/DefaultController.ts")
+const router = Router()
 
 router.get("/", controller.SayHello)
 
-module.exports = router
+export {router as defaultRouter}

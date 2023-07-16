@@ -1,12 +1,13 @@
-export {};
-
-const {Schema, model} = require('mongoose')
+import {Schema} from 'mongoose'
+import { connection } from '../mongoConnection'
 
 /**
  * Уровень доступа пользователя, определяющий права работы с порталом
  */
-const AccessLevel = new Schema({
+const AccessLevelSchema = new Schema({
      value: [{type: Number}],
 })
 
-module.exports = model('AccessLevel', AccessLevel)
+const AccessLevel = connection.model('AccessLevel', AccessLevelSchema)
+
+export default AccessLevel

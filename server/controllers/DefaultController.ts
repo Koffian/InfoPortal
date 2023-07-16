@@ -9,4 +9,5 @@ class DefaultController {
      }
 }
 
-module.exports = new DefaultController()
+var controller = new DefaultController()
+export { controller }

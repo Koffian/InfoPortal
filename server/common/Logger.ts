@@ -1,13 +1,11 @@
 /**
  * Логер для печати в файл
 */
-export {};
 
-const winston = require("winston");
+import winston from "winston"
 
 const errorLogFilePath = "logs/error.log"
 const appLogFilePath = "logs/app.log"
-
 
 const Logger = winston.createLogger({
   level: "info",
@@ -21,4 +19,4 @@ const Logger = winston.createLogger({
   ],
 });
 
-module.exports = Logger
+export default Logger

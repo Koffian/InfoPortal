@@ -1,9 +1,11 @@
-const express = require("express")
-const mongoose = require("mongoose")
-const defaultRouter = require('./routes/DefaultRouter.ts')
-const authRouter = require("./routes/AuthRouter.ts")
-const adminRouter = require("./routes/AdminRouter.ts")
-const Logger = require("./common/Logger.ts")
+import express from "express"
+import mongoose from "mongoose"
+
+import { defaultRouter } from './routes/DefaultRouter'
+import { authRouter }  from "./routes/AuthRouter"
+import { adminRouter } from  "./routes/AdminRouter"
+import Logger from "./common/Logger"
+import { gfs } from "mongoConnection"
 
 const port = 5000        ///< Порт
 const host = "127.0.0.1" ///< Адрес (localhost)
@@ -26,8 +28,8 @@ app.use("/admin", adminRouter)
 
 const Start = async() => {
      try {
-          await mongoose.connect(mongoURI)
-          app.listen(port, host, () => {Logger.info("Сервер слушает на " + host + ":" + port)})
+          // await mongoose.connect(mongoURI)
+          app.listen(port, host, () => {console.log("Сервер слушает на " + host + ":" + port)})
      }
      catch (e) {
           Logger.error("Ошибка запуска сервера: " + e)

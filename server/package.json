@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Проект информационного портала",
   "main": "server.ts",
   "scripts": {
     "start": "node server.ts",
@@ -27,6 +27,9 @@
     "winston": "^3.10.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/gridfs-stream": "^0.5.36",
+    "@types/jsonwebtoken": "^9.0.2",
     "nodemon": "^3.0.1"
   }
 }

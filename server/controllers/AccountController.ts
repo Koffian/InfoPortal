@@ -1,19 +1,19 @@
-export {};
+import Account from "../models/Account"
+import AccessLevel from "../common/AccessLevel"
+import security_constants from "../common/SecurityConstants"
+import Logger from "../common/Logger"
 
-const Account = require("../models/Account.ts")
-const AccessLevel = require("../common/AccessLevel.ts")
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const security_constants = require("../common/SecurityConstants.ts")
-const Logger = require("../common/Logger.ts")
+import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken"
+
 
 /**
  * Генерация токена доступа пользователя
- * @param {*} id ID пользователя
- * @param {*} accessLevel Уровень доступа пользователя
+ * @param {Schema.Types.ObjectId} id ID пользователя
+ * @param {Number} accessLevel Уровень доступа пользователя
  * @returns Подписанный токен
  */
-const generateAccessToken = (id : Number, accessLevel : Number) => {
+const generateAccessToken = (id : any, accessLevel : any) => {
      const payload = {
          id,
          accessLevel,
@@ -75,7 +75,7 @@ class AccountController
                }
                const token = generateAccessToken(account._id, account.access)
 
-               console.log("Пользователь " + username + " авторизовался и получил токен доступа")
+               console.log("Пользователь " + username + " авторизовался и получил токен доступа: " + token)
                return res.status(200).json({token, roles: account.access})
           } 
           catch (e) {
@@ -103,4 +103,5 @@ class AccountController
        }
 }
 
-module.exports = new AccountController()
+var controller = new AccountController()
+export { controller }
