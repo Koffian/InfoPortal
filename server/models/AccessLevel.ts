@@ -1,5 +1,5 @@
 import {Schema} from 'mongoose'
-import { connection } from '../mongoConnection'
+import { connection } from '../MongoConnection'
 
 /**
  * Уровень доступа пользователя, определяющий права работы с порталом

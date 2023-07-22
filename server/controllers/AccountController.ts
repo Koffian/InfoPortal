@@ -6,7 +6,6 @@ import Logger from "../common/Logger"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 
-
 /**
  * Генерация токена доступа пользователя
  * @param {Schema.Types.ObjectId} id ID пользователя

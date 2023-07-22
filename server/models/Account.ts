@@ -1,5 +1,5 @@
 import {Schema} from 'mongoose'
-import { connection } from '../mongoConnection'
+import { connection } from '../MongoConnection'
 
 const AccountSchema = new Schema({
      username: {type: String, unique: true, required: true},

@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken")
 const validationResult = require('express-validator')
 const bcrypt = require('bcryptjs')
 
+import { Request, Response, NextFunction } from "express"
+
 const minLoginLength = 10 ///< Минимальная длина пароля
 const maxLoginLength = 20 ///< Максимальная длина пароля
 const minPasswordLength = 10 ///< Минимальная длина пароля
@@ -41,7 +43,7 @@ function IsValidPassword (plainPassword : String)
  * @param {*} res Ответ
  * @param {*} next Вызов следующего коллбека из массива
  */
-function RegistrationMiddleware (req : any, res : any, next : any) {
+function RegistrationMiddleware (req : Request, res : Response, next : NextFunction) {
      try {          
           if (req.body == null){
                return res.status(403).json({message: "Пустое тело запроса "})

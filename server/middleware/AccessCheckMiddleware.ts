@@ -1,17 +1,14 @@
 import jwt from "jsonwebtoken"
 import security_constants from "../common/SecurityConstants"
 
-// import { AccessLevel } from "../common/AccessLevel"
-// import { json } from "body-parser"
+import { Request, Response, NextFunction } from "express"
 
 /**
  * Проверить права доступа клиента
- * @param {*} req Тело запроса
- * @param {*} res Тело ответа
- * @param {*} next Вызов следующего коллбека при подходящем доступе
+ * @param {Number} accessLevelRequired Необходимый уровень доступа, который должен быть у пользователя
  */
 function AccessCheckMiddleware (accessLevelRequired : Number) {
-     return function (req : any, res : any, next : any) 
+     return function (req : Request, res : Response, next : NextFunction) 
      {
           try {
                const authHeader = req.headers.authorization

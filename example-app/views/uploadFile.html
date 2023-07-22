@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Загрузка файлов</title>
+</head>
+<body>
+  <h1>Загрузка файлов</h1>
+  <p>Это минимальный пример загрузки файлов на сервер с помощью формы</p>
+  <p>Файлы передаются по http в двоичном виде в кодировке multipart/form-data</p>
+  <p>На стороне сервера работает multer, который грузит принятый файл в файловое хранилище GridFS из mongoDB</p>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" id="fileInput" name="file">
+    <button type="submit">Upload</button>
+  </form>
+
+  <a href="index.html">
+     <input type="button" value="На главную" />
+  </a>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const fileInput = document.getElementById('fileInput');
+    const uploadEndpoint = "127.0.0.1:5000/upload"
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+     console.log("uploading files...")
+
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert('No file selected.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch("http://127.0.0.1:5000/upload/image", {
+          method: 'POST',
+          body: formData
+        });
+
+        console.log("response body:")
+        console.log(response)
+
+        if (response.ok) {
+          console.log('File uploaded successfully.');
+        } else {
+          console.log('File upload failed with response: ' + response + JSON.stringify(response));
+        }
+      } catch (error) {
+          console.log('Error uploading file:', error);
+        console.log('Error uploading file: ' + error);
+      }
+    });
+  </script>
+</body>
+</html>

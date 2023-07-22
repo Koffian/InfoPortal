@@ -4,10 +4,11 @@
  * Наполняет базу данных дефолтным контентом, полезным для тестирования
 */
 
-const Account = require("#server/models/Account.js")
-const AccessLevel = require("#server/common/AccessLevel.js")
-const bcrypt = require('bcryptjs')
-const mongoose = require("mongoose")
+
+import Account from "../models/Account"
+import AccessLevel from "../common/AccessLevel"
+import bcrypt from 'bcryptjs'
+import mongoose from "mongoose"
 
 const port = 5000        ///< Порт
 const host = "127.0.0.1" ///< Адрес (localhost)
