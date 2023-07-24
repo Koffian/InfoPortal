@@ -5,9 +5,6 @@ import Post from "#server/models/Post"
 /** Загрузить пост сообщетсва в MongoDb */
 function UploadPost(req : Request, res : Response, next : NextFunction){
      const {title, content, createdBy} = req.body
-     console.log("тело запроса: ")
-     console.log(req.body);
-     
      if (title === undefined){
           console.log("Пользователь не предоставил заголовок")
           return res.status(400).json({message: "Отсутствует заголовок поста"})
@@ -27,24 +24,18 @@ function UploadPost(req : Request, res : Response, next : NextFunction){
 }
 
 /**
- * Проверить запрос загрузки файла определённого типа в файловое хранилише
- * @param {Number} UploadedContentType Ожидаемый тип по данному эндпоинту
+ * Проверить результат сохранения файла, загруженного в multipart/form-data виде в GridFS
  */
-function UploadMiddleware (UploadedContentType : Number) {
-     return function (req : Request, res : Response, next : NextFunction) {
-          try {         
-
-          if (UploadedContentType === ContentTypes.POST)
-          {
-               console.log("Пытаемся загрузить новый пост сообщества")
-               return UploadPost(req, res, next)
-          }
+function GridFsMiddleware (req : Request, res : Response, next : NextFunction) {
+     try {         
+          console.log("Сохранён файл: ")
+          console.log(req.file)
+          return res.status(201).json({message: "Успешно создан файл.", file: req.file})
      }
      catch (e) {
-          console.log("Ошибка middleware загрузки файлов: " + e)
+          console.log("Ошибка сохранения файла в хранилище GridFs: " + e)
           return res.status(403).json({error: {message: "Не удалось Загрузить файл: " + e}})
-     }
      }
 }
 
-export default UploadMiddleware
+export default GridFsMiddleware

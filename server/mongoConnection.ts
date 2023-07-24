@@ -53,7 +53,6 @@ const storage = new GridFsStorage({
                description: "Изображение png/jpeg/jpg"
                }
            };
-
            resolve(fileInfo);
           });
           });

@@ -2,11 +2,59 @@
 <html>
 <head>
   <title>Отрисова markdown постов по id</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
   <h1>Отрисовка markdown постов по id</h1>
+  <a href="index.html">
+     <input type="button" value="На главную" />
+  </a>
 
-  <script>
-  </script>
+  <script src="../functions.js"></script>
+
+  <div id="markdownContent">
+       # Hello, Markdown!
+       This is **rendered** using `marked` library.
+     </div>
+     
+     <p id="contentParagraph"></p>
+     <script type="module">
+
+     import { marked } from'../node_modules/marked/lib/marked.esm.js';
+
+     const markdownContainer = document.getElementById('markdownContent')
+     // Get the raw Markdown text from the container
+     const markdownText = markdownContainer.innerHTML;
+ 
+     // Get the value of the 'id' parameter from the URL
+     const postURL = getParameterByName('id');
+ 
+     // Use the 'id' parameter as needed
+     console.log('postURL:', postURL);
+
+    async function fetchPost() {
+          try {
+               console.log("fetching post...")
+               const response = await fetch(postURL, {
+                    method: 'GET',
+               });
+               // Зарезолвить промис к реальной JSON дате, отправленной сервером
+               const data = await response.json()
+               if (response.ok) {
+                    console.log('Получен пост:');
+                    console.log(data[0].content)
+                    const html = marked(data[0].content);
+                    markdownContainer.innerHTML = html
+               } 
+               else {
+                    console.log('Ошибка получения постов');
+               }
+               
+          } catch (error) {
+               console.log("Ошибка получения постов: " + error)
+          }
+     }
+     fetchPost()
+   </script>
 </body>
 </html>

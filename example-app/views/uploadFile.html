@@ -2,12 +2,13 @@
 <html>
 <head>
   <title>Загрузка файлов</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-  <h1>Загрузка файлов</h1>
+  <h1>Загрузка файлов, работа с GridFS</h1>
   <p>Это минимальный пример загрузки файлов на сервер с помощью формы</p>
   <p>Файлы передаются по http в двоичном виде в кодировке multipart/form-data</p>
-  <p>На стороне сервера работает multer, который грузит принятый файл в файловое хранилище GridFS из mongoDB</p>
+  <p>На стороне сервера работает multer, который грузит принятый файл в файловое хранилище GridFS из mongoDB, где файл хранится в чанках ~255Кб</p>
   <form id="uploadForm" enctype="multipart/form-data">
     <input type="file" id="fileInput" name="file">
     <button type="submit">Upload</button>

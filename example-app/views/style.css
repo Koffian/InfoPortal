@@ -1,0 +1,35 @@
+input[type=button] {
+     background-color: #28252d;
+     border: none;
+     color: white;
+     padding: 5px 30px;
+     text-align: center;
+     text-decoration: none;
+     display: inline-block;
+     font-size: 14px;
+   }
+
+/* Styling for the list items (cards) */
+li {
+     display: inline-block;
+     background-color: #f9f9f9;
+     border-radius: 8px;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+     padding: 10px 20px;
+     margin: 10px;
+     width: 100%;
+   }
+   
+   /* Styling for the links inside the list items */
+   li a {
+     color: #007bff;
+     text-decoration: none;
+   }
+   
+   li a:hover {
+     text-decoration: underline;
+   }
+
+   body {
+     font-family: Arial, sans-serif;
+   }

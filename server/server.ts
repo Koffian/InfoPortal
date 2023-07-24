@@ -8,11 +8,12 @@ import Logger from "./common/Logger"
 import { contentRouter } from "./routes/ContentRouter"
 import { imageRouter } from "./routes/ImageRouter"
 import { Network } from "./common/Network"
-
-const port = 5000        ///< Порт
-const host = "127.0.0.1" ///< Адрес (localhost)
+import cors from "cors"
 
 const app = express()
+
+/** Использовать CORS для возможности cross-origin запросов (не только в одном домене) */
+app.use(cors());
 
 // Middleware для приложения express
 app.use(express.json())
@@ -32,7 +33,7 @@ app.use("/image", imageRouter)
 
 const Start = async() => {
      try {
-          app.listen(Network.hostPort, Network.hostAddress, () => {console.log("Сервер слушает на " + host + ":" + port)})
+          app.listen(Network.hostPort, Network.hostAddress, () => {console.log("Сервер слушает на " + Network.hostName)})
      }
      catch (e) {
           Logger.error("Ошибка запуска сервера: " + e)

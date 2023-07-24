@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Список постов</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <h1>Получения списка постов с сервера</h1>
+  <p>На данной странице можно выполнить запрос на получение всех доступных URL постов, а также краткую общую информацию (например, заголовок, автор)</p>
+  <p>В примере выполняется запрос с помощью fetchAPI, однако более высокоуровневым и удобным решением является axios</p>
+  <p>Для просмотра отдельного поста его контент грузится по url с сервера </p>
+  <a href="index.html">
+     <input type="button" value="На главную" />
+  </a>
+     <ol id="postList"></ol>
+  <script>
+
+     postList = document.getElementById('postList')
+
+     console.log("post list in global scope: ")
+     console.log(postList)
+
+     async function fetchPosts() {
+          try {
+               console.log("fetching posts...")
+               const formData = new FormData();
+               const response = await fetch("http://127.0.0.1:5000/content/posts", {
+                    method: 'GET',
+               });
+               // Зарезолвить промис к реальной JSON дате, отправленной сервером
+               const data = await response.json()
+               const postArray = data.postsURLAndExtra
+               
+               if (response.ok) {
+                    console.log('Получен список постов:');
+                    postArray.forEach(post => {
+                         const postCard = document.createElement('li')
+                         const postTitle = document.createElement('p')
+                         const postAuthor = document.createElement('p')
+                         const postLink = document.createElement('a')
+                         const contentDiv = document.createElement('div');
+
+
+                         postLink.textContent = post.url
+                         postLink.href = "markdownRender.html?id="+post.url
+                         postLink.target = "_blank"
+
+                         postTitle.textContent = post.title
+                         postAuthor.textContent = post.createdBy
+
+                         contentDiv.appendChild(postTitle);
+                         contentDiv.appendChild(postAuthor);
+                         contentDiv.appendChild(postLink);
+
+                         // Стили
+                         postCard.style.color = "white"
+                         postCard.style.font = ""
+                         postCard.style.backgroundColor = "#124912"
+                         postLink.style.textDecoration = "underline"
+
+                         postCard.appendChild(contentDiv)
+
+                         postList.appendChild(postCard)
+                    });
+               } 
+               else {
+                    console.log('Ошибка получения постов');
+               }
+               
+          } catch (error) {
+          console.log("Ошибка получения постов: " + error)
+          }
+     }
+
+     fetchPosts()
+     </script>
+     </body>
+     </html>

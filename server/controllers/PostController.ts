@@ -2,13 +2,14 @@ import { Document, ObjectId } from "mongodb";
 import { gfs, gridfsBucket, upload } from "../MongoConnection";
 import { Request, Response } from "express"
 import Post from "../models/Post";
+import { Network } from "../common/Network";
 /**
  * Контролер для работы с постами сообщества (т.к. записи о постах меньше 16 Мб, пока-что не планируется их хранение в GridFS)
  */
 class PostController {
      async CreateNewPost(req : Request, res : Response){
           try {
-
+               
                const createdPost =  await Post.create({ title: req.body.title, content: req.body.content, createdBy: req.body.createdBy})
 
                console.log("Создан пост: " + createdPost)
@@ -25,11 +26,13 @@ class PostController {
                const postArray = await Post.find()
 
                // Построить массив url'ов изображений с метадатой
-               const postsURLAndExtra = postArray.map((file) => ({
-                    title: file.title,
-                    url: `/post/${file._id}`
+               const postsURLAndExtra = postArray.map((post) => ({
+                    title: post.title,
+                    createdBy: post.createdBy,
+                    url: Network.hostName + `/content/post/${post._id}`
                }));
 
+               console.log("Отдан список постов")
                return res.status(200).json({postsURLAndExtra})
                }
           catch (e) {
@@ -39,6 +42,7 @@ class PostController {
 
      async GetPostByURL(req : Request, res : Response){
           try {
+               console.log("получаем пост по url")
                const postFound = await Post.find({_id: req.params.id})
 
                if (postFound === undefined)

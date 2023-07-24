@@ -4,11 +4,12 @@ import { controller as postController } from "../controllers/PostController"
 import ContentTypes from "../common/ContentTypes"
 import UploadMiddleware from "../middleware/UploadMiddleware"
 import { upload } from "../MongoConnection"
+import GridFsMiddleware from "../middleware/GridFsMiddleware"
 
 /** Роутер загрузки контента на сайт /upload/.. */
 const router = Router()
 
-router.post("/image", upload.single('file'))
+router.post("/image", upload.single('file'), GridFsMiddleware)
 
 /**
  * TODO

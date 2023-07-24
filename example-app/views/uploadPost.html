@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Загрузка поста</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <h1>Загрузка постов, работа с GridFS</h1>
+  <p>Форма загрузки поста в БД.</p>
+  <p>Форма нужна для удобства создания постов:</p>
+  <p>Удобнее написать пост отдельным файлов предпочитаемом редакторе, а затем отправить файл с контентом через форму.</p>
+  <p>Это проще чем работать вручную со строкой разметки, включащей символы, которые ломают json разметку </p>
+  <form id="uploadForm" enctype="multipart/form-data">
+     <label for="fileInput">Выберите файл:</label>
+     <input type="file" id="fileInput" name="myFile" required>
+ 
+     <!-- First additional field -->
+     <label for="titleField">Заголовок:</label>
+     <input type="text" id="titleField" name="titleField" required>
+ 
+     <!-- Second additional field -->
+     <label for="authorField">Автор:</label>
+     <input type="text" id="authorField" name="authorField" required>
+    
+    <button type="submit">Upload</button>
+  </form>
+  <a href="index.html">
+     <input type="button" value="На главную" />
+  </a>
+
+  <div id="fileContent"></div>
+
+  <script src="../functions.js"></script>
+  
+  <script type="module">
+     import { marked } from'../node_modules/marked/lib/marked.esm.js';
+      const form = document.getElementById('uploadForm');
+      const fileInput = document.getElementById('fileInput');
+     form.addEventListener('submit', async function (event) {
+          event.preventDefault()
+          try {
+               const file =fileInput.files[0];
+               const fileContent = await readFileContent(file)
+               const html = marked(fileContent);
+               document.getElementById('fileContent').innerHTML = html
+               let requestBody = {
+                    "title": document.getElementById('titleField').value,
+                    "content": fileContent,
+                    "createdBy": document.getElementById('authorField').value
+               }
+               requestBody = JSON.stringify(requestBody)
+               console.log("request body to send: ")
+               console.log(requestBody)
+
+               const response = await fetch("http://127.0.0.1:5000/upload/post", {
+                    method: 'POST',
+                    headers: {
+                         'Content-Type': 'application/json'
+                    }, 
+                    body: requestBody
+               });
+
+               } catch (error) {
+               console.log("Ошибка загрузки поста: " + error)
+          }
+     });
+   </script>
+</body>
+</html>
