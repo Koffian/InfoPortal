@@ -26,7 +26,7 @@ connection.once('open', () => {
      gfs = g(connection.db, mongoose.mongo)
      gfs.collection(bucketName)
      
-     console.log ("Connected to mongodb")
+     console.log ("Connected to mongodb: " + Network.mongoURL)
 })
 
 /**

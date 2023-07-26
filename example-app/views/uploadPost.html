@@ -52,7 +52,7 @@
                console.log("request body to send: ")
                console.log(requestBody)
 
-               const response = await fetch("http://127.0.0.1:5000/upload/post", {
+               const response = await fetch("backend/upload/post", {
                     method: 'POST',
                     headers: {
                          'Content-Type': 'application/json'

@@ -3,7 +3,7 @@
 export namespace Network {
 
      /** Ip адрес хоста*/
-     export const hostAddress = "127.0.0.1"
+     export const hostAddress = "77.222.60.117"
 
      /** Порт, на котором слушает хост */
      export const hostPort = 5000

@@ -27,15 +27,15 @@
      const markdownText = markdownContainer.innerHTML;
  
      // Get the value of the 'id' parameter from the URL
-     const postURL = getParameterByName('id');
+     const postID = getParameterByName('id');
  
      // Use the 'id' parameter as needed
-     console.log('postURL:', postURL);
+     console.log('postID:', postID);
 
     async function fetchPost() {
           try {
                console.log("fetching post...")
-               const response = await fetch(postURL, {
+               const response = await fetch("/backend/content/post/" + postID, {
                     method: 'GET',
                });
                // Зарезолвить промис к реальной JSON дате, отправленной сервером

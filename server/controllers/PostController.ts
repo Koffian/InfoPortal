@@ -29,7 +29,7 @@ class PostController {
                const postsURLAndExtra = postArray.map((post) => ({
                     title: post.title,
                     createdBy: post.createdBy,
-                    url: Network.hostName + `/content/post/${post._id}`
+                    url: post._id
                }));
 
                console.log("Отдан список постов")
