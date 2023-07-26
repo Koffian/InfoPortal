@@ -31,6 +31,11 @@ app.use("/upload", uploadRouter)
 app.use("/content", contentRouter)
 app.use("/image", imageRouter)
 
+/** Для дебага */
+app.get('/', (req, res) => {
+     res.send('backend-API информационного портала');
+   });
+
 const Start = async() => {
      try {
           app.listen(Network.hostPort, Network.hostAddress, () => {console.log("Сервер слушает на " + Network.hostName)})

@@ -5,6 +5,7 @@
   "main": "server.ts",
   "scripts": {
     "start": "node server.ts",
+    "build": "tsc --diagnostics --outDir ./build ",
     "dev": "nodemon server.ts",
     "initialize": "node scripts/initScript.ts",
     "upload_image": "npx ts-node scripts/uploadImage.ts"
