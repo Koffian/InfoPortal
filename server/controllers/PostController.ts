@@ -45,7 +45,7 @@ class PostController {
                console.log("получаем пост по url")
                const postFound = await Post.find({_id: req.params.id})
 
-               if (postFound === undefined)
+               if (typeof postFound === 'undefined' || postFound === null)
                {
                     return (res.status(403).json("Не найден пост с данным id"))
                }

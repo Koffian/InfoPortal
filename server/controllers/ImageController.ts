@@ -6,7 +6,6 @@ import { Request, Response } from "express"
 /**
  * Контролер для работы с изображениями с помощью GridFS в MongoDB
  */
-
 class ImageController {
 
      /** Не нужно сохранение в контроллере, т.к. middleware upload.single() сразу кладёт в хранилище GridFS */

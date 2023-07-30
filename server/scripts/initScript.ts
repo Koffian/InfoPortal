@@ -4,16 +4,11 @@
  * Наполняет базу данных дефолтным контентом, полезным для тестирования
 */
 
-
+import { Network } from "../common/Network"
 import Account from "../models/Account"
 import AccessLevel from "../common/AccessLevel"
 import bcrypt from 'bcryptjs'
 import mongoose from "mongoose"
-
-const port = 5000        ///< Порт
-const host = "127.0.0.1" ///< Адрес (localhost)
-
-const databaseUrl = "mongodb://0.0.0.0:27017/portal" ///< Адрес сервера БД
 
 const defaultAdminName = "administrator" ///< Логин админа
 const defaultAdminPassword = "adminadmin"     ///< Пароль админа
@@ -23,7 +18,7 @@ const PreInitializeServer = async() =>
 {
      try {
 
-          await mongoose.connect(databaseUrl)
+          await mongoose.connect(Network.mongoURL)
           
           /**
            * 1. Создание администраторской учётки

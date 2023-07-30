@@ -31,7 +31,7 @@ app.use("/upload", uploadRouter)
 app.use("/content", contentRouter)
 app.use("/image", imageRouter)
 
-/** Для дебага */
+/** Для дебага. Вернуть строку по корню / */
 app.get('/', (req, res) => {
      res.send('backend-API информационного портала');
    });
