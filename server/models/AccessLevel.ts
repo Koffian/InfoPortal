@@ -1,13 +1,11 @@
 import {Schema} from 'mongoose'
 import { connection } from '../MongoConnection'
 
-/**
- * Уровень доступа пользователя, определяющий права работы с порталом
- */
 const AccessLevelSchema = new Schema({
-     value: [{type: Number}],
+     value: {type: Number, required: true},
 })
 
+/** Уровень доступа пользователя, определяющий права работы с порталом */
 const AccessLevel = connection.model('AccessLevel', AccessLevelSchema)
 
 export default AccessLevel

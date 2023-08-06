@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express"
-import ContentTypes from "../common/ContentTypes"
 import Post from "#server/models/Post"
 
 /** Загрузить пост сообщетсва в MongoDb */

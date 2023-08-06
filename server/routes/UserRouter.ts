@@ -5,6 +5,6 @@ import AccessLevel from "../common/AccessLevel"
 
 const router = Router()
 
-router.get("/accounts", AccessCheckMiddleware(AccessLevel.Administrator), controller.GetAccounts)
+router.get("/accounts", AccessCheckMiddleware(AccessLevel.Administrator), controller.GetUsers)
 
-export {router as adminRouter}
+export {router as userRouter}

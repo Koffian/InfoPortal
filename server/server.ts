@@ -1,14 +1,14 @@
 import express, { NextFunction, Request, Response } from "express"
 
-import { debugRouter } from './routes/DebugRouter'
 import { authRouter }  from "./routes/AuthRouter"
-import { adminRouter } from  "./routes/AdminRouter"
+import { userRouter } from  "./routes/UserRouter"
 import { uploadRouter } from "./routes/UploadRouter"
 import Logger from "./common/Logger"
-import { contentRouter } from "./routes/ContentRouter"
+import { postsRouter } from "./routes/PostRouter"
 import { imageRouter } from "./routes/ImageRouter"
 import { Network } from "./common/Network"
 import cors from "cors"
+import { ReadServerState, WriteServerState, ServerState } from "./common/Config"
 
 const app = express()
 
@@ -24,11 +24,11 @@ app.use((req : Request, res : Response, next : NextFunction) => {
      next();
 });
 
-app.use("/debug", debugRouter)
 app.use("/auth", authRouter)
-app.use("/admin", adminRouter)
+app.use("/users", userRouter)
+app.use("/posts", postsRouter)
+
 app.use("/upload", uploadRouter)
-app.use("/content", contentRouter)
 app.use("/image", imageRouter)
 
 /** Для дебага. Вернуть строку по корню / */
@@ -38,6 +38,15 @@ app.get('/', (req, res) => {
 
 const Start = async() => {
      try {
+          const serverState = await ReadServerState()
+
+          if (serverState === ServerState.notInitialized) 
+          {
+               console.log("Не проинициализирован сервер / бд сервера, завершение работы... ")
+               console.log("Для инициализации используйте: 'npm run init'")
+               process.exit(0);
+          }
+          
           app.listen(Network.hostPort, Network.hostAddress, () => {console.log("Сервер слушает на " + Network.hostName)})
      }
      catch (e) {
@@ -45,5 +54,5 @@ const Start = async() => {
      }
      
 }
+     Start()
 
-Start()

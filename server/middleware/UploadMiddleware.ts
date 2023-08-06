@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express"
-import ContentTypes from "../common/ContentTypes"
 import Post from "#server/models/Post"
 
 /** Загрузить пост сообщетсва в MongoDb */
@@ -34,7 +33,7 @@ function UploadMiddleware (UploadedContentType : Number) {
      return function (req : Request, res : Response, next : NextFunction) {
           try {         
 
-          if (UploadedContentType === ContentTypes.POST)
+          if (UploadedContentType === 3)
           {
                console.log("Пытаемся загрузить новый пост сообщества")
                return UploadPost(req, res, next)
