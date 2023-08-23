@@ -5,9 +5,9 @@ const bcrypt = require('bcryptjs')
 import { Request, Response, NextFunction } from "express"
 
 const minLoginLength = 10 ///< Минимальная длина пароля
-const maxLoginLength = 20 ///< Максимальная длина пароля
+const maxLoginLength = 30 ///< Максимальная длина пароля
 const minPasswordLength = 10 ///< Минимальная длина пароля
-const maxPasswordLength = 20 ///< Максимальная длина пароля
+const maxPasswordLength = 255 ///< Максимальная длина пароля
 
 /**
  * Проверка логина пользователя на корректность

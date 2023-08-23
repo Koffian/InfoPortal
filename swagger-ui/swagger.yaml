@@ -11,18 +11,22 @@ info:
     - [Репозиторий с исходным кодом сервера](https://github.com/Koffian/InfoPortal)
   version: 1.0.0
 servers:
-  - url: http://77.222.60.117/backend/
+  - url: http://127.0.0.1:5000
 tags:
+  - name: Авторизация
+    description: Вход в учётную запись / регистрация / выход
   - name: Посты
     description: Работа с постами
   - name: Пользователи
     description: Операции над учётными записями пользователей
 paths:
-  /admin/accounts:
+  /users/find:
     get:
       tags: 
         - Пользователи
       description: Получить список всех аккаунтов в системе
+      summary: Поиск пользователей в системе
+      deprecated: true
       responses:
         '200':
           description: Успешная операция
@@ -34,16 +38,289 @@ paths:
                   $ref: '#components/schemas/User'
         '400':
           description: Недостаточно доступа
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#components/schemas/ErrorResponse"
+                example:
+                  "0"
         '403':
           description: Проблема авторизации
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#components/schemas/ErrorResponse"
       security:
         - portalAuth: []
-  /content/posts:
+  /users/:id:
+    get:
+      tags:
+        - Пользователи
+      description: Получить информацию о пользователе
+      summary: Получить информацию о пользователе
+      deprecated: true
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/User'
+        '400':
+          description: Недостаточно доступа
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#components/schemas/ErrorResponse"
+                example:
+                  "0"
+        '403':
+          description: Проблема авторизации
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#components/schemas/ErrorResponse"
+      security:
+        - portalAuth: []
+    put:
+      tags:
+        - Пользователи
+      description: Получить информацию о пользователе
+      summary: Получить информацию о пользователе
+      deprecated: true
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/User'
+        '400':
+          description: Недостаточно доступа
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#components/schemas/ErrorResponse"
+                example:
+                  "0"
+        '403':
+          description: Проблема авторизации
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#components/schemas/ErrorResponse"
+      security:
+        - portalAuth: []
+  /posts:
     get:
       tags:
         - Посты
-      summary: Получить весь список постов
+      summary: Получить список постов с заданными параметрами
       description: Получить весь список постов
+      parameters:
+        - name: page
+          in: query
+          description: Номер страницы для пагинации
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          description: Число постов на странице
+          schema:
+            type: integer
+            default: 10
+        - name: order_by
+          in: query
+          description: Сортировать по
+          schema:
+            type: string
+            $ref: "#/components/schemas/SortingMethod"
+        - name: karma_lowest_limit
+          in: query
+          description: Минимальная карма для отображения (если defined)
+          schema:
+            type: integer
+            format: int64
+            default: null
+            example: -50
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+                  properties:
+                    id: 
+                      type: number
+                      description: Идентификатор пользователя, на которого подписан текущий пользователя
+  /posts/{id}:
+    get:
+      tags:
+        - Посты
+      description: Получить пост по **ID**
+      summary: Получить тело поста с заданным ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID поста, для которого выполнится поиск тела
+          example: 64dcd283ae9f52b020922f45
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+                  properties:
+                    id: 
+                      type: number
+                      description: Идентификатор пользователя, на которого подписан текущий пользователя
+        '400':
+          description: Недостаточно доступа
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#components/schemas/ErrorResponse"
+                example:
+                  "0"
+        '403':
+          description: Проблема авторизации
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#components/schemas/ErrorResponse"
+                example:
+                  "0"
+    put:
+      tags:
+        - Посты
+      description:  Модифицировать запись о посте с заданным **ID**
+      summary: Модифицировать запись о посте с заданным ID
+      deprecated: true
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+                  properties:
+                    id: 
+                      type: number
+                      description: Идентификатор пользователя, на которого подписан текущий пользователя
+        '400':
+          description: Недостаточно доступа
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#components/schemas/ErrorResponse"
+                example:
+                  "0"
+        '403':
+          description: Проблема авторизации
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#components/schemas/ErrorResponse"
+                example:
+                  "0"
+    delete:
+      tags:
+        - Посты
+      description: Удалить пост с заданным **ID** (ADMIN only)
+      summary: Удалить пост с заданным ID (ADMIN only)
+      security:
+        - portalAuth: []
+      
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID поста, который будет удаляться
+          example: 64dcd283ae9f52b020922f45
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+                  properties:
+                    id: 
+                      type: number
+                      description: Идентификатор пользователя, на которого подписан текущий пользователя
+        '400':
+          description: Недостаточно доступа
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#components/schemas/ErrorResponse"
+                example:
+                  "0"
+        '403':
+          description: Проблема авторизации
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#components/schemas/ErrorResponse"
+                example:
+                  "0"
+  /posts/find:
+    get:
+      tags:
+        - Посты
+      summary: Найти заголовки постов по заданным параметрам
+      description: В отличие от предыдущего метода, здесь отсутствет пагинация (пока единственное отличие)
+      deprecated: true
+      parameters:
+        - name: title
+          in: query
+          description: Искомое слово в названии
+          schema:
+            type: string
+            default: 
+        - name: author
+          in: query
+          description: Поиск по автору
+          schema:
+            type: string
+        - name: order_by
+          in: query
+          description: Сортировать по
+          schema:
+            type: string
+            default: karma_highest
       responses:
         '200':
           description: Успешная операция
@@ -51,6 +328,79 @@ paths:
           description: Недостаточно доступа
         '403':
           description: Проблема авторизации
+  /posts/upload:
+    post:
+      tags:
+        - Посты
+      summary: Загрузить новый пост в систему [ЕЩЁ НЕ РАБОТАЕТ]
+      description: Создаёт новый пост согласно заданным параметрам
+      deprecated: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/PostCreationExample"
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема авторизации
+
+  /auth/login:
+    post:
+      tags:
+        - Авторизация
+      summary: Авторизация в системе через логин / пароль (незахешированный)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "Ivanov1984"
+                password:
+                  type: string
+                  example: "IvanovTheBestPassword-1337"
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема авторизации
+          
+  /auth/registration:
+    post:
+      tags:
+        - Авторизация
+      summary: Регистрация нового пользователя в системе
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "Ivanov1984"
+                password:
+                  type: string
+                  example: "IvanovTheBestPassword-1337"
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема авторизации
+        
 
 components:
   schemas:
@@ -137,7 +487,7 @@ components:
               type:
                 type: number
                 description: "Тип элемента поста"
-                example: "Заголовок, цитата, список, параграф, изображение и т.д."
+                example: "0 - Заголовок, 1 - цитата, список, параграф, изображение и т.д."
               content:
                 type: string
                 description: "Тело элемента в виде строки(пока что)????"
@@ -195,6 +545,46 @@ components:
           example: "Всё, что относится к веб разработке"
       xml:
         name: tag
+    ErrorResponse:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: Целочисленный код ошибки
+        name:
+          $ref: "#/components/schemas/ErrorName"
+          
+          description: Название ошибки
+        description:
+          type: string
+          description: Подробности ошибки
+      enum:
+        - s
+    ErrorCode:
+      type: integer
+      format: int64
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+    ErrorName:
+      type: string
+      enum:
+        - "NotFound"
+        - "InternalError"
+        - "InsufficientAccess"
+        - "DeletedOrMoved"
+    SortingMethod:
+      type: string
+      enum:
+        - "karma_descending"
+        - "karma_ascending"
+        - "new_first"
+        - "old_first"
   requestBodies:
     UserArray:
       description: Массив пользователей
@@ -204,8 +594,29 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/User'
+    PostCreationExample:
+      description: Пример создания поста
+      content:
+        application/json: 
+            schema:
+              type: object
+              required:
+                - title
+                - type
+              properties:
+                title:
+                  type: string
+                  description: Главный заголовок поста
+                  example: Подходящий заголовок к посту
+                type:
+                  type: integer
+                  description: Код типа публикации
+
   securitySchemes:
     portalAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+security:
+  - portalAuth: []
+

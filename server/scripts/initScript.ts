@@ -56,7 +56,7 @@ const InitializeServer = async() =>
           let randomTestUser : mongoose.Document = user;
           for (let i = 0; i < testUserCount; i ++)
           {
-               const randomUsername = generateUsername()
+               const randomUsername = generateUsername() + "_test" + i;
                const defaultHashedPassword = bcrypt.hashSync(defaultTestPassword, 7)
                randomTestUser = new User({username: randomUsername, password: defaultHashedPassword, access: AccessLevel.User})
                await randomTestUser.save()
@@ -69,25 +69,41 @@ const InitializeServer = async() =>
           newTag = new Tag({name: "Тестирование-2", description: "Ещё один тег для разнообразия тестирования"})
           await newTag.save()
 
-          /** 4. Создание тестовых постов (с помощью учётки последнего созданного тестового пользователя)*/
-          let testPost = new Post({
-               title: "Тестовый пост",
-               type: PostTypes.Article,
-               format: PostFormats.Case,
-               createdBy: randomTestUser._id,
-               body: [
-                    {
-                         type: ContentTypes.Paragraph,
-                         content: "Это простой тестовый параграф"
-                    },
-                    {
-                         type: ContentTypes.Quote,
-                         content: "Нет чувства сильнее, чем начинать сначала! (С) - "
-                    }
-               ]
-          })
 
-          await testPost.save()
+          /** 4. Создание тестовых постов (с помощью учётки последнего созданного тестового пользователя)*/
+          for (let i = 0; i < testUserCount; i ++)
+          {
+               
+               let authorUser = await User.findOne({username : { $regex: `.*_test+${i}`}}).exec();
+               if (authorUser === null)
+               {
+                    console.log("not found usserrr");
+                    return;
+               }
+               console.log("found author user: ");
+               console.log(authorUser);
+               
+               let testPost = new Post({
+                    title: "Тестовый пост № " + i,
+                    type: PostTypes.Article,
+                    format: PostFormats.Case,
+                    createdBy: authorUser._id,
+                    body: [
+                         {
+                              type: ContentTypes.Paragraph,
+                              content: "Это простой тестовый параграф"
+                         },
+                         {
+                              type: ContentTypes.Quote,
+                              content: "Нет чувства сильнее, чем начинать сначала! (С) - "
+                         }
+                    ],
+                    karmaCounter: i - testUserCount / 2
+               })
+     
+               await testPost.save()
+          }
+
          console.log("Скрипт инициализации успешно завершился")
          return;
      }
