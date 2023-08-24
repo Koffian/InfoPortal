@@ -4,12 +4,12 @@ info:
   description: |-
     На этой странице описано backend-API информационного портала.
 
-    Последнее изменение: 06.08.2023
+    Последнее изменение: 24.08.2023
     
     Некоторые полезные ссылки:
     - [Сайт информационного портала](http://77.222.60.117/)
     - [Репозиторий с исходным кодом сервера](https://github.com/Koffian/InfoPortal)
-  version: 1.0.0
+  version: 1.0.0 
 servers:
   - url: http://127.0.0.1:5000
 tags:
@@ -18,8 +18,22 @@ tags:
   - name: Посты
     description: Работа с постами
   - name: Пользователи
-    description: Операции над учётными записями пользователей
+  - name: Хлам
+    description: DEV методы, которые не войдут в релиз
 paths:
+  /:
+    get:
+      tags:
+        - Хлам
+      description: Просто получить респонс от API. Если не работает, возможны проблемы с CROSS-ORIGIN и проч.
+      summary: Просто получить респонс от API. Если не работает, то API недоступно
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                type: string
   /users/find:
     get:
       tags: 
