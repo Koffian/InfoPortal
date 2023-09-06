@@ -2,22 +2,33 @@ import { Document, ObjectId } from "mongodb";
 import { gfs, gridfsBucket, upload } from "../MongoConnection";
 import { Request, Response } from "express"
 import Post from "../models/Post";
-import { Network } from "../common/Network";
 import { GetSortingMethod } from "../common/types/SortingMethods";
+import { API_ErrorResponse, API_Response, KnownErrors, StatusCodes } from "../common/types/API_Responses";
+import { ReturnAPIResponse } from "../common/helpers/Responses";
 /**
  * Контролер для работы с постами сообщества (т.к. записи о постах меньше 16 Мб, пока-что не планируется их хранение в GridFS)
  */
 class PostController {
      async CreateNewPost(req : Request, res : Response){
           try {
-               
-               const createdPost =  await Post.create({ title: req.body.title, content: req.body.content, createdBy: req.body.createdBy})
+               const createdPost =  await Post.create({ title: req.body.title, content: req.body.content, createdBy: req.body.createdBy});
+               console.log("Создан пост: " + createdPost);
 
-               console.log("Создан пост: " + createdPost)
-               return res.status(200).json({message: "Создан новый пост " + createdPost})
+               return ReturnAPIResponse(res, new API_Response(
+                    StatusCodes.Success,
+                    {createdPost},
+                    "Успешно создан новый пост"
+               ))
+
                }
           catch (e) {
                console.log("ошибка создания поста: " + e)
+
+               return ReturnAPIResponse(res, new API_ErrorResponse(
+                    StatusCodes.InternalError,
+                    KnownErrors.InternalError,
+                    "ошибка создания поста: " + e
+               ));
           }
      }
 
@@ -47,10 +58,21 @@ class PostController {
                };
 
                console.log("Отдан список постов")
-               return res.status(200).json({postArray})
+
+               return ReturnAPIResponse(res, new API_Response(
+                    StatusCodes.Success,
+                    postArray,
+                    "Отдан список постов"
+               ))
                }
           catch (e) {
                console.log("ошибка получения списка постов: " + e)
+
+               return ReturnAPIResponse(res, new API_ErrorResponse(
+                    StatusCodes.InternalError,
+                    KnownErrors.InternalError,
+                    "Внутрення ошибка сервера при получении списка постов из БД: " + e
+               ));
           }
      }
 
@@ -63,16 +85,48 @@ class PostController {
                console.log("получаем пост по url")
                const postFound = await Post.find({_id: req.params.id})
 
-               if (typeof postFound === 'undefined' || postFound === null)
+               if (postFound === undefined || postFound === null || !postFound.length)
                {
-                    return res.status(403).json("Не найден пост с данным id")
+                    return ReturnAPIResponse(res, new API_ErrorResponse(
+                         StatusCodes.NotFound,
+                         KnownErrors.NotFound,
+                         "Не найден пост с URL " + req.params.id
+                    ));
                }
-
-               return res.status(200).json(postFound)
+               
+               return ReturnAPIResponse(res, new API_Response(
+                    StatusCodes.Success,
+                    postFound,
+                    "Найден существующий пост "
+               ));
                }
           catch (e) {
                console.log("ошибка получения поста: " + e)
-               res.status(400).json(e)
+               return ReturnAPIResponse(res, new API_ErrorResponse(
+                    StatusCodes.InternalError,
+                    KnownErrors.InternalError,
+                    "Внутрення ошибка сервера при получении поста: " + e
+               ));
+          }
+     }
+
+     async UpdatePost(req: Request, res: Response)
+     {
+          try 
+          {
+               const postFound = await Post.find({_id: req.params.id})
+               if (typeof postFound === 'undefined' || postFound === null)
+               {
+                    return ReturnAPIResponse(res, new API_ErrorResponse(
+                         StatusCodes.NotFound,
+                         KnownErrors.NotFound,
+                         "Не найден пост с URL " + req.params.id
+                    ));
+               }
+          } 
+          catch (error)
+          {
+               
           }
      }
 
@@ -82,15 +136,27 @@ class PostController {
                const postFound = await Post.find({_id: req.params.id})
                if (typeof postFound === 'undefined' || postFound === null)
                {
-                    return res.status(403).json("Не найден пост с данным id")
+                    return ReturnAPIResponse(res, new API_ErrorResponse(
+                         StatusCodes.NotFound,
+                         KnownErrors.NotFound,
+                         "Не найден пост с URL " + req.params.id
+                    ));
                }
                await Post.deleteOne({_id: req.params.id})
 
-               return res.status(200).json("Пост успешно удалён")
+               return ReturnAPIResponse(res, new API_Response(
+                    StatusCodes.Success,
+                    undefined,
+                    "Пост успешно удалён"
+               ));
           } 
-          catch (error) {
-               console.log("Не удалось удалить пост: " + error);
-               return res.status(400).json("Не удалось удалить пост: " + error)
+          catch (e) {
+               console.log("Не удалось удалить пост :" + e);
+               return ReturnAPIResponse(res, new API_ErrorResponse(
+                    StatusCodes.InternalError,
+                    KnownErrors.InternalError,
+                    "Не удалось удалить пост " + e
+               ));
           }
      }
 }

@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { controller } from "../controllers/AccountController"
+import { controller } from "../controllers/UserController"
 import registrationMiddleware from "../middleware/RegistrationMiddleware"
 
 const router = Router()

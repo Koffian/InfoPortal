@@ -18,6 +18,11 @@ tags:
   - name: Посты
     description: Работа с постами
   - name: Пользователи
+    description: Работа с учётными данными пользователей
+  - name: Тэги
+    description: Просмотр и модификация тегов
+  - name: Комментарии
+    description: Просмотр и редактирование комментариев
   - name: Хлам
     description: DEV методы, которые не войдут в релиз
 paths:
@@ -38,9 +43,16 @@ paths:
     get:
       tags: 
         - Пользователи
-      description: Получить список всех аккаунтов в системе
-      summary: Поиск пользователей в системе
-      deprecated: true
+      description: Найти подходящие логины пользователей системы
+      summary: Найти подходящие логины пользователей системы
+      parameters:
+        - name: login
+          in: query
+          description: Поиск по логину
+          schema:
+            type: string
+            default: null
+            example: "Ivanov1984"
       responses:
         '200':
           description: Успешная операция
@@ -49,14 +61,14 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#components/schemas/User'
+                  $ref: '#components/schemas/UserCard'
         '400':
           description: Недостаточно доступа
           content:
             application/json:
               schema:
                 type: object
-                $ref: "#components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/API_ErrorResponse"
                 example:
                   "0"
         '403':
@@ -65,24 +77,30 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/API_ErrorResponse"
       security:
         - portalAuth: []
   /users/:id:
     get:
       tags:
         - Пользователи
-      description: Получить информацию о пользователе
-      summary: Получить информацию о пользователе
-      deprecated: true
+      description: Получить информацию о пользователе через id
+      summary: Получить информацию о пользователе через id
+      parameters:
+        - name: id
+          in: query
+          description: id пользователя
+          schema:
+            type: string
+            default: 64dcd283ae9f52b020922efa
+        
       responses:
         '200':
           description: Успешная операция
           content:
             application/json:
-              schema:
-                type: array
-                items:
+                schema:
+                  type: object
                   $ref: '#components/schemas/User'
         '400':
           description: Недостаточно доступа
@@ -90,7 +108,7 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/API_ErrorResponse"
                 example:
                   "0"
         '403':
@@ -99,7 +117,7 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/API_ErrorResponse"
       security:
         - portalAuth: []
     put:
@@ -123,7 +141,7 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/API_ErrorResponse"
                 example:
                   "0"
         '403':
@@ -132,7 +150,7 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/API_ErrorResponse"
       security:
         - portalAuth: []
   /posts:
@@ -214,7 +232,7 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#components/schemas/ErrorResponse"
+                $ref: "#components/schemas/API_ErrorResponse"
                 example:
                   "0"
         '403':
@@ -223,7 +241,7 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#components/schemas/ErrorResponse"
+                $ref: "#components/schemas/API_ErrorResponse"
                 example:
                   "0"
     put:
@@ -231,7 +249,28 @@ paths:
         - Посты
       description:  Модифицировать запись о посте с заданным **ID**
       summary: Модифицировать запись о посте с заданным ID
-      deprecated: true
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID поста, тело которого редактируется
+          example: 64dcd283ae9f52b020922f45
+      requestBody:
+        required: true
+        description: Значения полей, которые пользователь хочет обновить. Некоторые поля невозможно изменить (например, дату создания поста)
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "Ivanov1984"
+                password:
+                  type: string
+                  example: "IvanovTheBestPassword-1337"
       responses:
         '200':
           description: Успешная операция
@@ -251,7 +290,7 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#components/schemas/ErrorResponse"
+                $ref: "#components/schemas/API_ErrorResponse"
                 example:
                   "0"
         '403':
@@ -260,7 +299,7 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#components/schemas/ErrorResponse"
+                $ref: "#components/schemas/API_ErrorResponse"
                 example:
                   "0"
     delete:
@@ -298,7 +337,7 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#components/schemas/ErrorResponse"
+                $ref: "#components/schemas/API_ErrorResponse"
                 example:
                   "0"
         '403':
@@ -307,7 +346,7 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: "#components/schemas/ErrorResponse"
+                $ref: "#components/schemas/API_ErrorResponse"
                 example:
                   "0"
   /posts/find:
@@ -467,6 +506,28 @@ components:
                 description: Идентификатор созданного поста пользователем
       xml:
         name: user
+    UserCard:
+      type: object
+      required:
+        - username
+        - id
+      description: Урезанная информация о пользователе для более удобного отображения
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        username:
+          type: string
+          description: Юзернейм пользователя портала. Используется для авторизации.
+          example: administrator
+        access:
+          type: integer
+          description: Статус/уровень доступа пользователя (пользователь/админ/модератор/забанен)
+          format: int32
+          example: 0
+      xml:
+        name: user
     Post:
       description: Пост, написанный пользователем портала.
       type: object
@@ -559,15 +620,15 @@ components:
           example: "Всё, что относится к веб разработке"
       xml:
         name: tag
-    ErrorResponse:
+    API_ErrorResponse:
       type: object
       required:
-        - code
+        - errorCode
       properties:
-        code:
+        errorCode:
           $ref: '#/components/schemas/ErrorCode'
           description: Целочисленный код ошибки
-        name:
+        decodedError:
           $ref: "#/components/schemas/ErrorName"
           
           description: Название ошибки
@@ -580,11 +641,12 @@ components:
       type: integer
       format: int64
       enum:
-        - 0
         - 1
         - 2
         - 3
         - 4
+        - 5
+        - 6
     ErrorName:
       type: string
       enum:
@@ -592,6 +654,8 @@ components:
         - "InternalError"
         - "InsufficientAccess"
         - "DeletedOrMoved"
+        - "WrongPassword"
+        - "AlreadyExists"
     SortingMethod:
       type: string
       enum:
