@@ -11,6 +11,6 @@ const router = Router()
 router.post("/image", upload.single('file'), GridFsMiddleware)
 
 /** Загрузить пост сообщества (временно здесь, желательно перенести в UserRouter, когда будет) */
-router.post("/post", UploadMiddleware(3), postController.CreateNewPost)
+router.post("/post", UploadMiddleware(3), postController.CreatePost)
 
 export {router as uploadRouter}

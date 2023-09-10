@@ -15,7 +15,13 @@ const PostSchema = new Schema({
      ],                                                               ///< Содержимое поста
      creationDate: {type: Date, default: new Date(), required: true},                      ///< Дата создания поста
      modifyDate: {type: Date, default: new Date(), required: true},                        ///< Дата последнего изменения поста
-     tags: [ObjectId],                                                ///< Список привязанных тегов
+     tags: [
+          {
+               tagId: {type: ObjectId, ref: 'Tag', required: true},
+               name: {type: String, required: true, default: "Безымяный"}
+          }
+               
+     ],                                                ///< Список привязанных тегов
      comments: [ObjectId],                                            ///< Список комментариев первой вложенности
      karmaCounter: {type: Number, default: 0, required: true},                        ///< Счётчик кармы
      isRestricted: {type: Boolean, default: false, required: true}    ///< Заблокирован модератором/админом или нет

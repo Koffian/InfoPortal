@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { controller as PostController } from "../controllers/PostController"
-import AccessCheckMiddleware from "../middleware/AccessCheckMiddleware"
+import {AccessCheckMiddleware, RequireAccessCheckMiddleware } from "../middleware/AccessCheckMiddleware"
 import AccessLevel from "../common/AccessLevel"
 
 /** Роутер для работы с постами сообщества */
@@ -11,6 +11,12 @@ router.get("/", PostController.GetPosts)
 
 /*Получить один пост */
 router.get("/:id", PostController.GetPostByURL)
+
+/*Модифицировать пост согласно ID */
+router.put("/:id", RequireAccessCheckMiddleware([AccessLevel.User, AccessLevel.Moderator, AccessLevel.Administrator]), PostController.UpdatePost)
+
+/*Создать новый пост (от учётки User)  */
+router.post("/upload", RequireAccessCheckMiddleware([AccessLevel.User]), PostController.CreatePost)
 
 /* Поиск совпадений*/
 router.get("/matches", PostController.GetPostMatches)

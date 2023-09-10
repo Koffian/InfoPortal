@@ -3,12 +3,16 @@ import express, { NextFunction, Request, Response } from "express"
 import { authRouter }  from "./routes/AuthRouter"
 import { userRouter } from  "./routes/UserRouter"
 import { uploadRouter } from "./routes/UploadRouter"
-import Logger from "./common/Logger"
 import { postsRouter } from "./routes/PostRouter"
 import { imageRouter } from "./routes/ImageRouter"
+import { tagRouter } from "./routes/TagRouter"
+
+import Logger from "./common/Logger"
 import { Network } from "./common/Network"
-import cors from "cors"
 import { ReadServerState, WriteServerState, ServerState } from "./common/Config"
+
+import cors from "cors"
+import { commentRouter } from "./routes/CommentRouter"
 
 const app = express()
 
@@ -27,9 +31,11 @@ app.use((req : Request, res : Response, next : NextFunction) => {
 app.use("/auth", authRouter)
 app.use("/users", userRouter)
 app.use("/posts", postsRouter)
+app.use("/tags", tagRouter)
 
 app.use("/upload", uploadRouter)
 app.use("/image", imageRouter)
+app.use("/comments", commentRouter)
 
 /** Для дебага. Вернуть строку по корню / */
 app.get('/', (req, res) => {

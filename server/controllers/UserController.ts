@@ -95,7 +95,7 @@ class UserController
                     return ReturnAPIResponse(res, new API_ErrorResponse(
                          StatusCodes.Forbidden,
                          KnownErrors.Forbidden,
-                         "Пароль не прошел проверку токеном."
+                         "Неправильный пароль."
                     ));
                }
                const token = generateAccessToken(user._id, user.access)
@@ -127,18 +127,17 @@ class UserController
      async FindUsers(req : Request, res : Response) {
           try 
           {
-               let usernameQuery: string = req.query.login?.toString() || "";
+               let usernameQuery = req.query.login || "";
 
-               if (usernameQuery === "")
-               {
-                    Logger.error("Can't find users with undefined login");
-                    const response: API_ErrorResponse = new API_ErrorResponse(
-                         StatusCodes.BadRequest,
-                         KnownErrors.BadParams, 
-                         "Логин для поиска не определен")
+               // if (typeof(usernameQuery) != typeof(String))
+               // {
+               //      Logger.error("Can't find users with undefined login");
 
-                    return ReturnAPIResponse(res, response);
-               }
+               //      return ReturnAPIResponse(res, new API_ErrorResponse(
+               //           StatusCodes.BadRequest,
+               //           KnownErrors.BadParams, 
+               //           "Логин для поиска не определен"));
+               // }
 
                Logger.info("Производится поиск пользователей по логину")
 
@@ -175,7 +174,150 @@ class UserController
                     "Ошибка при получении списка пользователей :" + e
                ));
           }
-       }
+     }
+
+     async UpdateUserById(req: any, res: Response){
+          let userIDQuery = req.params.id;
+
+          if ( req.accessLevel === AccessLevel.User 
+               && userIDQuery !== req.requestorUserId)
+          {
+               return ReturnAPIResponse(res, new API_ErrorResponse(
+                    StatusCodes.Forbidden,
+                    KnownErrors.Forbidden, 
+                    "Обычный пользователь не может редактировать чужие данные"));
+          }
+
+          if (userIDQuery === undefined)
+          {
+               Logger.error("Не найден пользователь с ID: " + userIDQuery);
+               return ReturnAPIResponse(res, new API_ErrorResponse(
+                    StatusCodes.BadRequest,
+                    KnownErrors.BadParams, 
+                    "Не найден пользователь с ID: " + userIDQuery));
+          }
+
+          const updatedUser: any = await User.findByIdAndUpdate(req.params.id, req.body)
+
+          if (updatedUser === null)
+          {
+               Logger.error("Не найден пользователь с ID: " + userIDQuery);
+               return ReturnAPIResponse(res, new API_ErrorResponse(
+                    StatusCodes.BadRequest,
+                    KnownErrors.BadParams, 
+                    "Не найден пользователь с ID: " + userIDQuery));
+          }
+
+               return ReturnAPIResponse(res, new API_Response(
+                    StatusCodes.Success,
+                    req.body,
+                    "Успещно обновлена информация о пользователе"
+               ));
+     }
+
+     async DeleteUserById(req: any, res: Response){
+          let userIDQuery = req.params.id;
+
+          if (userIDQuery.length !== 24 || userIDQuery === undefined)
+          {
+               Logger.error("Невалидный идентификатор пользователя (Должна быть HEX строка длины 24): " + userIDQuery);
+               return ReturnAPIResponse(res, new API_ErrorResponse(
+                    StatusCodes.BadRequest,
+                    KnownErrors.BadParams, 
+                    "Невалидный идентификатор пользователя (Должна быть HEX строка длины 24): " + userIDQuery));
+          }
+
+          const deletedUser: any = await User.findByIdAndDelete(userIDQuery, req.body)
+
+          if (deletedUser === null || Object.entries(deletedUser).length === 0)
+          {
+               return ReturnAPIResponse(res, new API_ErrorResponse(
+                    StatusCodes.NotFound,
+                    KnownErrors.NotFound,
+                    "Не найден удаляемый пользователь :"
+               ));
+          }
+
+               return ReturnAPIResponse(res, new API_Response(
+                    StatusCodes.Success,
+                    deletedUser,
+                    "Пользователь успешно удалён администратором: " + userIDQuery
+               ));
+     }
+
+     async GetUserByQuery(req : Request, res : Response) {
+          try 
+          {
+               let usernameQuery: string = req.query.username?.toString() || "";
+
+               console.log("Производится поиск пользователя по юзернейму: " + usernameQuery)
+
+               let userFound: any = await User.findOne({username : usernameQuery });
+
+               
+               if (userFound === null)
+               {
+                    return ReturnAPIResponse(res, new API_ErrorResponse(
+                         StatusCodes.NotFound,
+                         KnownErrors.NotFound,
+                         "Не найден пользователь с юзернеймом: " + usernameQuery
+                         ));
+               }
+               userFound["password"] = "Хэшированный пароль не отдаётся при просмотре записи пользователя"
+               return ReturnAPIResponse(res, new API_Response(
+                    StatusCodes.Success,
+                    userFound,
+                    "Передана информация о пользователе"
+               ));
+          } 
+          catch (e) 
+          {
+               Logger.error("Ошибка при получении пользователя :" + e)
+
+               return ReturnAPIResponse(res, new API_ErrorResponse(
+                    StatusCodes.InternalError,
+                    KnownErrors.InternalError,
+                    "Ошибка при получении пользователя :" + e
+               ));
+          }
+     }
+
+     async FindUserByID(req : Request, res : Response) {
+          try 
+          {
+               const userIdParam = req.params.id;
+
+               if (userIdParam === undefined || userIdParam.length != 24)
+               {
+                    Logger.error("Не передан ID пользователя через param параметр");
+                    return ReturnAPIResponse(res, new API_ErrorResponse(
+                         StatusCodes.BadRequest,
+                         KnownErrors.BadParams, 
+                         "Не передан ID пользователя через param параметр или ID невалиден по длине"
+                    ))
+               }
+
+               Logger.info("Производится поиск пользователя по ID: " + userIdParam)
+
+               const userFound = await User.find({ _id : userIdParam });
+
+               return ReturnAPIResponse(res, new API_Response(
+                    StatusCodes.Success,
+                    userFound,
+                    "Передана информация о пользователе"
+               ));
+          } 
+          catch (e) 
+          {
+               Logger.error("Ошибка при получении пользователя :" + e)
+
+               return ReturnAPIResponse(res, new API_ErrorResponse(
+                    StatusCodes.InternalError,
+                    KnownErrors.InternalError,
+                    "Ошибка при получении пользователя по id :" + e
+               ));
+          }
+     }
 }
 
 var controller = new UserController()

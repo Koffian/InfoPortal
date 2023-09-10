@@ -6,6 +6,10 @@ info:
 
     Последнее изменение: 24.08.2023
     
+    Известные учётные записи системы:
+    - Администратор[administrator: adminadmin]
+    - Тестовые учётки обычных пользователей [логин заканчивается на test_N, пароль 8 единиц: 11111111]
+
     Некоторые полезные ссылки:
     - [Сайт информационного портала](http://77.222.60.117/)
     - [Репозиторий с исходным кодом сервера](https://github.com/Koffian/InfoPortal)
@@ -23,15 +27,17 @@ tags:
     description: Просмотр и модификация тегов
   - name: Комментарии
     description: Просмотр и редактирование комментариев
-  - name: Хлам
-    description: DEV методы, которые не войдут в релиз
+  - name: Карма
+    description: Методы добавления кармы и отслеживания действий, связанных с ней
+  - name: Пинг
+    description: Проверка свзязи
 paths:
   /:
     get:
       tags:
-        - Хлам
-      description: Просто получить респонс от API. Если не работает, возможны проблемы с CROSS-ORIGIN и проч.
-      summary: Просто получить респонс от API. Если не работает, то API недоступно
+        - Пинг
+      description: Получить респонс от API. Если метод не работает, возможны проблемы с CROSS-ORIGIN и проч сетевыми настройками.
+      summary: Получить респонс от API. Если метод не работает, то API недоступно
       responses:
         '200':
           description: Успешная операция
@@ -43,8 +49,8 @@ paths:
     get:
       tags: 
         - Пользователи
-      description: Найти подходящие логины пользователей системы
-      summary: Найти подходящие логины пользователей системы
+      description: Найти пользователей системы по логину (краткая информация)
+      summary: Найти пользователей системы по логину (краткая информация)
       parameters:
         - name: login
           in: query
@@ -80,7 +86,7 @@ paths:
                 $ref: "#/components/schemas/API_ErrorResponse"
       security:
         - portalAuth: []
-  /users/:id:
+  /users/{id}:
     get:
       tags:
         - Пользователи
@@ -88,7 +94,8 @@ paths:
       summary: Получить информацию о пользователе через id
       parameters:
         - name: id
-          in: query
+          required: true
+          in: path
           description: id пользователя
           schema:
             type: string
@@ -123,9 +130,27 @@ paths:
     put:
       tags:
         - Пользователи
-      description: Получить информацию о пользователе
-      summary: Получить информацию о пользователе
-      deprecated: true
+      description: Обновить информацию о пользователе
+      summary: Обновить информацию о пользователе
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: id пользователя
+          schema:
+            type: string
+            default: 64dcd283ae9f52b020922efa
+      requestBody:
+        required: true
+        description: Значения полей, которые пользователь хочет обновить. Некоторые поля невозможно изменить (например, дату создания поста)
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "NewUsername_ForIvanov1984"
       responses:
         '200':
           description: Успешная операция
@@ -153,6 +178,87 @@ paths:
                 $ref: "#/components/schemas/API_ErrorResponse"
       security:
         - portalAuth: []
+    delete:
+      tags:
+        - Пользователи
+      description: Удалить пользователя (может только админ, модератор не может. (добавить модератора?))
+      summary: Удалить пользователя (может только админ, модератор не может, пока что. (добавить?))
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: id пользователя
+          schema:
+            type: string
+            default: 64dcd283ae9f52b020922efa
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/User'
+        '400':
+          description: Недостаточно доступа
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/API_ErrorResponse"
+                example:
+                  "0"
+        '403':
+          description: Проблема авторизации
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/API_ErrorResponse"
+      security:
+        - portalAuth: []
+  /users:
+    get:
+      tags:
+        - Пользователи
+      description: Получить информацию о пользователе через username
+      summary: Получить информацию о пользователе через username
+      parameters:
+        - name: username
+          required: true
+          in: query
+          description: username пользователя
+          schema:
+            type: string
+            default: "Ivanov1984"
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+                schema:
+                  type: object
+                  $ref: '#components/schemas/User'
+        '400':
+          description: Недостаточно доступа
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/API_ErrorResponse"
+                example:
+                  "0"
+        '403':
+          description: Проблема авторизации
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/API_ErrorResponse"
+      security:
+        - portalAuth: []
+
   /posts:
     get:
       tags:
@@ -349,45 +455,12 @@ paths:
                 $ref: "#components/schemas/API_ErrorResponse"
                 example:
                   "0"
-  /posts/find:
-    get:
-      tags:
-        - Посты
-      summary: Найти заголовки постов по заданным параметрам
-      description: В отличие от предыдущего метода, здесь отсутствет пагинация (пока единственное отличие)
-      deprecated: true
-      parameters:
-        - name: title
-          in: query
-          description: Искомое слово в названии
-          schema:
-            type: string
-            default: 
-        - name: author
-          in: query
-          description: Поиск по автору
-          schema:
-            type: string
-        - name: order_by
-          in: query
-          description: Сортировать по
-          schema:
-            type: string
-            default: karma_highest
-      responses:
-        '200':
-          description: Успешная операция
-        '400':
-          description: Недостаточно доступа
-        '403':
-          description: Проблема авторизации
   /posts/upload:
     post:
       tags:
         - Посты
-      summary: Загрузить новый пост в систему [ЕЩЁ НЕ РАБОТАЕТ]
+      summary: Загрузить новый пост в систему
       description: Создаёт новый пост согласно заданным параметрам
-      deprecated: true
       requestBody:
         required: true
         content:
@@ -453,8 +526,290 @@ paths:
           description: Недостаточно доступа
         '403':
           description: Проблема авторизации
-        
+  /tags:
+    get:
+      tags:
+      - Тэги 
+      summary: Поиск тегов по названию
+      parameters:
+        - name: name
+          in: query
+          description: Встречающиеся символы в названиях тега
+          schema:
+            type: string
+            default: null
+            example: "Веб-разработка"
+        - name: searchLimit
+          in: query
+          description: Вернуть первые N найденных
+          schema:
+            type: string
+            default: 10
+            example: 20
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема авторизации
+    post:
+      tags:
+      - Тэги 
+      summary: Добавить новый тег [доступ Модератор/Администратор]
+      description: Добавить новый тег [доступ Модератор/Администратор]
+      parameters:
+        - name: name
+          in: query
+          description: Название нового тега
+          schema:
+            type: string
+            default: null
+            example: "Веб-разработка"
+          required: true
+        - name: description
+          in: query
+          description: Вернуть первые N найденных
+          schema:
+            type: string
+            default: null
+            example: Всё, что прямо/косвенно относится к в веб разработке
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема авторизации
+  /tags/{id}:
+    get:
+      tags:
+      - Тэги 
+      summary: Получение тега по ID
+      parameters:
+        - name: id
+          in: path
+          description: ID искомого тега
+          schema:
+            type: string
+            default: null
+          required: true
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема авторизации
 
+    put:
+      tags:
+      - Тэги 
+      summary: Обновление информации о теге [Админ/модератор]
+      parameters:
+        - name: id
+          in: path
+          description: ID обновляемого поста (path параметр)
+          schema:
+            type: string
+            default: null
+          required: true
+        - name: name
+          in: query
+          description: Новое название для обновляемого тега
+          schema:
+            type: string
+            default: null
+            example: "Веб-разработка"
+        - name: description
+          in: query
+          description: Новое описание для обновляемого тега
+          schema:
+            type: string
+            default: null
+            example: Всё, что прямо/косвенно относится к в веб разработке
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема авторизации
+    delete:
+      tags:
+      - Тэги 
+      summary: Удаление тега [Админ/модератор]
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема авторизации
+  /tags/push/{id}:
+    post:
+      tags:
+        - Тэги
+      summary: Привязать существующий тэг к элементу (к посту, пока что нет других элементов с тегами)
+      parameters:
+        - name: id
+          in: path
+          description: ID элемента, к которому добавляется тэг (path параметр)
+          schema:
+            type: string
+            default: null
+          required: true
+        - name: tagID
+          in: query
+          description: ID добавляемого существующего тега
+          schema:
+            type: string
+            default: null
+          required: true
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема авторизации
+  /tags/pop/{id}:
+    post:
+      tags:
+        - Тэги
+      summary: Отвязать тэг от элемента (от поста, пока что нет других элементов с тегами)
+      parameters:
+        - name: id
+          in: path
+          description: ID поста, у которого удаляется тег (path параметр)
+          schema:
+            type: string
+            default: null
+          required: true
+        - name: tagID
+          in: query
+          description: ID тега, открепляемого от элемента (должен быть связан с элементом)
+          schema:
+            type: string
+            default: null
+          required: true
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема авторизации
+  /comments/{id}:
+    get:
+      tags:
+      - Комментарии
+      summary: Получить информацию о комментарии
+      parameters:
+        - name: id
+          in: path
+          description: ID комментария, тело которого запрашивается
+          schema:
+            type: string
+            default: null
+          required: true
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема 
+    post:
+      tags:
+      - Комментарии
+      summary: Оставить комментарий к посту/другому комментарию
+      parameters:
+        - name: id
+          in: path
+          description: ID Цели, которую нужно прокомментировать
+          schema:
+            type: string
+            default: null
+          required: true
+      requestBody:
+        required: true
+        description: "Тело комментария. Массив различного контента, где каждый элемент это {код элемента + Data.Mixed}"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  example: object
+
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема 
+    delete:
+      tags:
+      - Комментарии
+      summary: Удалить комментарий (удалить свой/ удалить чужой через админа/модератора)
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема 
+  /comments/aggregate/{id}:
+    get:
+      tags:
+      - Комментарии
+      summary: Собрать список комментариев для данной цели (пост/другой коммент)
+      parameters:
+        - name: id
+          in: path
+          description: ID поста/коммента, для которого аггрегируются комментарии
+          schema:
+            type: string
+            default: null
+          required: true
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема авторизации
+  /karma/rate/{id}:
+    post:
+      tags:
+        - "Карма"
+      summary: Добавить/убрать карму к посту/комментарию. (самолайк можно, пока что)
+      deprecated: true
+      parameters:
+        - name: id
+          in: path
+          description: ID поста/коммента, который оценивается кармой
+          schema:
+            type: string
+            default: null
+          required: true
+        - name: ratingMethod
+          in: query
+          description: Действие оценивания (лайк/дизлайк/снять оценку)
+          schema:
+            type: string
+            $ref: "#/components/schemas/KarmaRatingMethod"
+          required: true
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема авторизации
 components:
   schemas:
     User:
@@ -663,6 +1018,12 @@ components:
         - "karma_ascending"
         - "new_first"
         - "old_first"
+    KarmaRatingMethod:
+      type: string
+      enum:
+        - "like"
+        - "dislike"
+        - "reset"
   requestBodies:
     UserArray:
       description: Массив пользователей
