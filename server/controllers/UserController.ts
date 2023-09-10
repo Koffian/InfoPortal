@@ -127,7 +127,7 @@ class UserController
      async FindUsers(req : Request, res : Response) {
           try 
           {
-               let usernameQuery = req.query.login || "";
+               let usernameQuery = req.query.username || "";
 
                // if (typeof(usernameQuery) != typeof(String))
                // {

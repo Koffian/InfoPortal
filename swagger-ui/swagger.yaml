@@ -52,7 +52,7 @@ paths:
       description: Найти пользователей системы по логину (краткая информация)
       summary: Найти пользователей системы по логину (краткая информация)
       parameters:
-        - name: login
+        - name: username
           in: query
           description: Поиск по логину
           schema:
