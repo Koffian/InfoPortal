@@ -450,10 +450,24 @@ paths:
       description: Создаёт новый пост согласно заданным параметрам
       requestBody:
         required: true
+        description: "Тело комментария. Массив различного контента, где каждый элемент это {код элемента + Data.Mixed}"
         content:
           application/json:
             schema:
-              $ref: "#/components/requestBodies/PostCreationExample"
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Введение в создание постов сообщества
+                type:
+                  type: number
+                  example: 0
+                format:
+                  type: number
+                  example: 1
+                body:
+                  type: array
+                  example: [{"contentType": 0, "content": "Привет, портал! В этом посте мы рассмотрим какую-нибудь интересную тему"},{"contentType": 1,"content": "Какая-нибудь крутая цитата, вот чтоб прям вообще"}]
       responses:
         '200':
           description: Успешная операция
@@ -706,8 +720,9 @@ paths:
               type: object
               properties:
                 body:
-                  type: string
-                  example: object
+                  type: array
+                  example: [{"contentType": 0, "content": "Пост ни о чём, лажа полная вообще, к чему это, не понятно"},{"contentType": 1,"content": "Автор, смотри сюда:"}]
+                  
       responses:
         '200':
           description: Успешная операция
