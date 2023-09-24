@@ -9,24 +9,27 @@ import { CheckPostModifyableFields } from "../common/helpers/CheckModifiyableFie
 import { PostFormats } from "../common/PostTypes";
 import AccessLevel from "../common/AccessLevel";
 import Tag from "../models/Tag";
+import { GetRequestorReactionFlag } from "../common/helpers/KarmaHelpers";
 /**
  * Контролер для работы с постами сообщества (т.к. записи о постах меньше 16 Мб, пока-что не планируется их хранение в GridFS)
  */
 class PostController {
      async GetPosts(req : any, res : any){
           try {
-
                const page = parseInt(req.query.page) || 1;
                const perPage = parseInt(req.query.per_page) || 10;
                const sortingMethod: string = GetSortingMethod(req.query.order_by);
+               const titleQuery: string = req.query.titleQuery || ""
 
-               const postsFound = await Post.find().skip(page * perPage - perPage).limit(perPage).sort(sortingMethod);
+               const postsFound = await Post.find({"title" : { $regex: titleQuery, $options: 'i'}}).skip(page * perPage - perPage).limit(perPage).sort(sortingMethod);
                const foundAmount = postsFound.length;
 
-               let postcards: any = postsFound.map(item => {
-                    const {_id ,title, type, format, createdBy, tags, karmaCounter, isRestricted, creationDate} = item;
-                    return {_id, title, type, format, createdBy, tags, karmaCounter, isRestricted, creationDate};
-               });
+               let postcards: any = await Promise.all( postsFound.map(async (post) =>
+               {
+                    const reactionFlag = await GetRequestorReactionFlag(req, post.id)
+                    const {_id ,title, type, format, createdBy, tags, karmaCounter, isRestricted, creationDate} = post;
+                    return {_id, title, type, format, createdBy, tags, karmaCounter, isRestricted, creationDate, reactionFlag};
+               }));
 
                // Построить массив url'ов изображений с метадатой
                const postArray = {
@@ -53,14 +56,11 @@ class PostController {
           }
      }
 
-     async GetPostMatches(req: Request, res: Response){
-          
-     }
-
      async GetPostByURL(req : Request, res : Response){
           try {
                console.log("получаем пост по url")
-               const postFound = await Post.find({_id: req.params.id})
+               /// Почему-то здесь не работает поиск по ID. Возможно проблемы с сохранением в БД
+               let postFound: any = await Post.find({_id: req.params.id})
 
                if (postFound === undefined || postFound === null || !postFound.length)
                {
@@ -71,9 +71,12 @@ class PostController {
                     ));
                }
                
+               /// Вот тут полная лажа с reactionFlag. Пока сделан workaround
+               const reactionFlag = await GetRequestorReactionFlag(req, req.params.id)
+               postFound[0].reactionFlag = reactionFlag
                return ReturnAPIResponse(res, new API_Response(
                     StatusCodes.Success,
-                    postFound,
+                    {post: postFound, reactionFlag: reactionFlag},
                     "Найден существующий пост "
                ));
           }
@@ -204,8 +207,9 @@ class PostController {
                          StatusCodes.NotFound,
                          KnownErrors.NotFound,
                          "Не найден пост с URL " + req.params.id
-                    ));
-               }
+                         ));
+                    }
+               // postFound._id;
                await Post.deleteOne({_id: req.params.id})
 
                return ReturnAPIResponse(res, new API_Response(

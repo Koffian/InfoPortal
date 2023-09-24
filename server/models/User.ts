@@ -9,6 +9,12 @@ const UserSchema = new Schema({
      bannedUntil: {type: Date},                                  ///< Забанен до какого
      mutedUntil: {type: Date},                                   ///< До какого замучен
      subscribedTo: [ObjectId],                                   ///< На кого подписан
+     reactionList: [
+          {
+          reactionType: {type: Number, default: 0},
+          targetId: {type: ObjectId}
+          }
+     ],                                      ///< На какие элементы отреагировал пользователь
      postsCreatedList: [ObjectId]                                ///< Список созданных постов
 })
 

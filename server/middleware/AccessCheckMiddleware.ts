@@ -7,22 +7,20 @@ import { ReturnAPIResponse } from "../common/helpers/Responses"
 import { DecodeAccessLevel } from "../common/helpers/DecodeAccessLevel"
 import AccessLevel from "../common/AccessLevel"
 
-/**
- * Проверить права доступа клиента
- * @param {Number} accessLevelRequired Необходимый уровень доступа, который должен быть у пользователя
- */
-export function AccessCheckMiddleware (accessLevelRequired : Number) {
-     return function (req : any, res : Response, next : NextFunction) 
-     {
-          try {
-               const authHeader = req.headers.authorization
-               if (!authHeader) {
-                    return ReturnAPIResponse(res, new API_ErrorResponse(
-                         StatusCodes.BadRequest,
-                         KnownErrors.BadParams,
-                         "Отсутствует заголовок авторизации"
-                    ))
-               }
+
+function HandleAuthorization(req: any, res : Response)
+{
+     try {
+          const authHeader = req.headers.authorization
+
+          /// 1. Неавторизированный доступ. Доступ к ресурсам возможен, однако у гостевого пользователя будет урезанный функционал
+          if (!authHeader)
+          {
+               req["isAuthorized"] = false
+          }
+          /// 2. Авторизированный доступ. В таком случае необходимо проверить заголовок авторизации и декодировать токен.
+          else
+          {
                const authToken = authHeader.split(' ')[1]
                if (!authToken) {
                     return ReturnAPIResponse(res, new API_ErrorResponse(
@@ -31,36 +29,81 @@ export function AccessCheckMiddleware (accessLevelRequired : Number) {
                          "Отсутствует токен авторизации (примерно нужно: bearer ' ' 123213..., через пробел)"
                     ))
                }
-
                ///@todo Заменить any на настоящий тип: jwt.JwtPayload | string
                const decodedPayload: any = jwt.verify(authToken, security_constants.tokenSecret)
 
-               if (decodedPayload.accessLevel != accessLevelRequired)
-               {
-                    console.log("Несоответствующий уровень доступа: " + decodedPayload.accessLevel + " != " + accessLevelRequired)
-                    return ReturnAPIResponse(res, new API_ErrorResponse(
-                         StatusCodes.Forbidden,
-                         KnownErrors.InsufficientAccess,
-                         "Несоответствующий уровень доступа"
-                    ))
-               }
                req["accessLevel"] = decodedPayload.accessLevel
                req["requestorUserId"] = decodedPayload.id
-               next()
+               req["isAuthorized"] = true
           }
-          catch (e) {
-               console.log("Ошибка проверки уровня доступа: " + e)
-               if (e instanceof jwt.JsonWebTokenError) {
+          return req["isAuthorized"]
+     }
+     catch (e) {
+          console.log("Ошибка проверки уровня доступа: " + e)
+          if (e instanceof jwt.JsonWebTokenError) {
+               return ReturnAPIResponse(res, new API_ErrorResponse(
+                    StatusCodes.BadRequest,
+                    KnownErrors.BadParams,
+                    "Не прошла проверка JsonWebToken (невалидный токен)"
+               ))
+          }
+          return ReturnAPIResponse(res, new API_ErrorResponse(
+               StatusCodes.InternalError,
+               KnownErrors.InternalError,
+               "Внутренняя ошибка сервера при установки флагов авторизации. Обратитесь к кому-нибудь"
+          ))
+     }
+}
+
+/**
+ * Установить флаги авторизации пользователя без дополнительных проверок.
+ */
+export function HandleAuthorisationMiddleware (req : any, res : Response, next : NextFunction)
+{
+     try {
+          const checkResult: any = HandleAuthorization(req, res)
+          if (checkResult instanceof API_ErrorResponse)
+          {
+               return checkResult
+          }
+          next()
+     }
+     catch (e) {
+          return ReturnAPIResponse(res, new API_ErrorResponse(
+               StatusCodes.InternalError,
+               KnownErrors.InternalError,
+          "Внутренняя ошибка сервера при проверке авторизации. Обратитесь к кому-нибудь"
+          ))
+     }
+}
+
+/**
+ * Потребовать авторизацию пользователя, т.е. работу с существующей учётной записью
+*/
+export function RequireAuthorizationMiddleware () {
+     return function (req : any, res : Response, next : NextFunction) 
+     {
+          try {
+               const checkResult: any = HandleAuthorization(req, res)
+               if (checkResult instanceof API_ErrorResponse)
+               {
+                    return checkResult
+               }
+               if (req["isAuthorized"] === false)
+               {
                     return ReturnAPIResponse(res, new API_ErrorResponse(
                          StatusCodes.BadRequest,
                          KnownErrors.BadParams,
-                         "Не прошла проверка JsonWebToken (невалидный токен)"
+                         "Для этого метода необходим авторизованный доступ. Пожалуйста, используйте учётную запись"
                     ))
                }
+               next()
+          }
+          catch (e) {
                return ReturnAPIResponse(res, new API_ErrorResponse(
                     StatusCodes.InternalError,
                     KnownErrors.InternalError,
-                    "Внутренняя ошибка сервера при проверке уровня доступа. Обратитесь к кому-нибудь"
+                    "Внутренняя ошибка сервера при требовании авторизации"
                ))
           }
      }
@@ -70,35 +113,21 @@ export function AccessCheckMiddleware (accessLevelRequired : Number) {
  * Потребовать, чтобы права доступа клиента были среди подходящих перечисленных
  * @param {Number} accessRequiredArray Перечеисление уровней доступа, разрешающих операцию
  */
-export function RequireAccessCheckMiddleware (accessRequiredArray : Array<number>) {
+export function RequireAccessLevelMiddleware (accessRequiredArray : Array<number>) {
      return function (req : any, res : Response, next : NextFunction) 
      {
           try {
-               const authHeader = req.headers.authorization
-               if (!authHeader) {
-                    return ReturnAPIResponse(res, new API_ErrorResponse(
-                         StatusCodes.BadRequest,
-                         KnownErrors.InsufficientAccess,
-                         "Отсутствует заголовок авторизации (AuthHeader)."
-                    ))
-               }
-               const authToken = authHeader.split(' ')[1]
-               if (!authToken) {
-                    return ReturnAPIResponse(res, new API_ErrorResponse(
-                         StatusCodes.BadRequest,
-                         KnownErrors.BadParams,
-                         "Отсутствует токен авторизации (примерно нужно: bearer ' ' 123213..., через пробел)"
-                    ))
-               }
-
-               ///@todo Заменить any на настоящий тип: jwt.JwtPayload | string
-               const decodedPayload: any = jwt.verify(authToken, security_constants.tokenSecret)
-
-               if (!accessRequiredArray.includes(decodedPayload.accessLevel))
+               const checkResult: any = HandleAuthorization(req, res)
+               if (checkResult instanceof API_ErrorResponse)
                {
-                    let errorMessage = DecodeAccessLevel(decodedPayload.accessLevel) + " не может выполнять это действие"
+                    return checkResult
+               }
 
-                    switch (decodedPayload.accessLevel) {
+               if (!accessRequiredArray.includes(req["accessLevel"]))
+               {
+                    let errorMessage = DecodeAccessLevel(req["accessLevel"]) + " не может выполнять это действие"
+
+                    switch (req["accessLevel"]) {
                          case AccessLevel.Administrator:
                               errorMessage += ". Попробуйте выполнить действие от имени обычного пользователя или модератора. Наполнение контентом лучше выполнять от других учёток (комментирование и пр. по мелочи)"
                               break;
@@ -118,21 +147,10 @@ export function RequireAccessCheckMiddleware (accessRequiredArray : Array<number
                     ))
                }
 
-               /// Уровень доступа корректен. Обновить тело запроса для последующих middleware
-               req["accessLevel"] = decodedPayload.accessLevel
-               req["requestorUserId"] = decodedPayload.id
-
                next()
           }
           catch (e) {
                console.log("Ошибка проверки уровня доступа: " + e)
-               if (e instanceof jwt.JsonWebTokenError) {
-                    return ReturnAPIResponse(res, new API_ErrorResponse(
-                         StatusCodes.InternalError,
-                         KnownErrors.InternalError,
-                         "Ошибка проверки токена, JsonWebTokenError"
-                    ))
-               }
                return ReturnAPIResponse(res, new API_ErrorResponse(
                     StatusCodes.InternalError,
                     KnownErrors.InternalError,

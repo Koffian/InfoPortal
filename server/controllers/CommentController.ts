@@ -5,6 +5,7 @@ import { ReturnAPIResponse } from "../common/helpers/Responses";
 import Post from "../models/Post";
 import Comment from "../models/Comment";
 import { ObjectId } from "mongodb";
+import { GetRequestorReactionFlag } from "../common/helpers/KarmaHelpers";
 
 
 /* Рекурсивно зарезолвить реплаи к комментарию по ID и вернуть список
@@ -118,6 +119,7 @@ class CommentController {
           }
 
           const comment = await Comment.findById(commentIDParam)
+          
           if (!comment)
           {
                return ReturnAPIResponse(res, new API_ErrorResponse(
@@ -127,10 +129,12 @@ class CommentController {
                ));
           }
 
+          const reactionFlag = await GetRequestorReactionFlag(req, comment.id)
+
           return ReturnAPIResponse(res, new API_Response(
                StatusCodes.Success,
-               comment,
-               "Возвращена информация о посте"
+               {comment: comment, reactionFlag: reactionFlag},
+               "Возвращена информация о комментарии"
           ))
      }
 
@@ -231,7 +235,7 @@ class CommentController {
                     return ReturnAPIResponse(res, new API_Response(
                          StatusCodes.Success,
                          aggregatedComments,
-                         "Собраны комментарии для поста :" + targetIDParam
+                         "Собраны комментарии для поста '" + postTarget.title + "', " + targetIDParam
                     )); 
                }
 
@@ -254,7 +258,7 @@ class CommentController {
                          return ReturnAPIResponse(res, new API_Response(
                               StatusCodes.Success,
                               aggregatedComments,
-                              "Собраны комментарии для поста :" + targetIDParam
+                              "Собраны комментарии для комментария с ID: " + targetIDParam + " от автора " + commentTarget.createdBy
                          )); 
                     }
                     else

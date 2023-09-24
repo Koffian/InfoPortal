@@ -17,7 +17,7 @@ const PostSchema = new Schema({
      modifyDate: {type: Date, default: new Date(), required: true},                        ///< Дата последнего изменения поста
      tags: [
           {
-               tagId: {type: ObjectId, ref: 'Tag', required: true},
+               tagId: {type: ObjectId, ref: 'Tag', required: true, default: "64dcd283ae9f52b020922f4a"},
                name: {type: String, required: true, default: "Безымяный"}
           }
                

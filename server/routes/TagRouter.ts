@@ -1,26 +1,26 @@
 import { Router } from "express"
 import { controller as TagController } from "../controllers/TagController"
-import {AccessCheckMiddleware, RequireAccessCheckMiddleware } from "../middleware/AccessCheckMiddleware"
+import { HandleAuthorisationMiddleware, RequireAccessLevelMiddleware } from "../middleware/AccessCheckMiddleware"
 import AccessLevel from "../common/AccessLevel"
 
 /** Роутер для работы с тегами сообщества */
 const router = Router()
 
 /** Получить список всех тегов */
-router.get("/", TagController.FindTags)
+router.get("/", HandleAuthorisationMiddleware, TagController.FindTags)
 
-router.get("/:id", TagController.GetTagByID)
+router.get("/:id", HandleAuthorisationMiddleware, TagController.GetTagByID)
 
 /*Создать новый тэг (от имени модератора или администратора)  */
-router.post("/", RequireAccessCheckMiddleware([AccessLevel.Moderator, AccessLevel.Administrator]), TagController.CreateNewTag)
+router.post("/", RequireAccessLevelMiddleware([AccessLevel.Moderator, AccessLevel.Administrator]), TagController.CreateNewTag)
 
 /*Обновить информацию о теге (от имени модератора или администратора)  */
-router.put("/:id", RequireAccessCheckMiddleware([AccessLevel.Moderator, AccessLevel.Administrator]), TagController.UpdateTag)
+router.put("/:id", RequireAccessLevelMiddleware([AccessLevel.Moderator, AccessLevel.Administrator]), TagController.UpdateTag)
 
 /** Привязать существующий тег к элементу */
-router.post("/push/:id", RequireAccessCheckMiddleware([AccessLevel.Moderator, AccessLevel.Administrator]), TagController.PushTag)
+router.post("/push/:id", RequireAccessLevelMiddleware([AccessLevel.Moderator, AccessLevel.Administrator]), TagController.PushTag)
 
 /** Отвязать существующий тег от элемента */
-router.post("/pop/:id", RequireAccessCheckMiddleware([AccessLevel.Moderator, AccessLevel.Administrator]), TagController.PopTag)
+router.post("/pop/:id", RequireAccessLevelMiddleware([AccessLevel.Moderator, AccessLevel.Administrator]), TagController.PopTag)
 
 export {router as tagRouter}

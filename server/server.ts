@@ -6,6 +6,7 @@ import { uploadRouter } from "./routes/UploadRouter"
 import { postsRouter } from "./routes/PostRouter"
 import { imageRouter } from "./routes/ImageRouter"
 import { tagRouter } from "./routes/TagRouter"
+import { karmaRouter } from "./routes/KarmaRouter"
 
 import Logger from "./common/Logger"
 import { Network } from "./common/Network"
@@ -36,6 +37,7 @@ app.use("/tags", tagRouter)
 app.use("/upload", uploadRouter)
 app.use("/image", imageRouter)
 app.use("/comments", commentRouter)
+app.use("/karma", karmaRouter)
 
 /** Для дебага. Вернуть строку по корню / */
 app.get('/', (req, res) => {

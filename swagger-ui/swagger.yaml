@@ -4,11 +4,19 @@ info:
   description: |-
     На этой странице описано backend-API информационного портала.
 
-    Последнее изменение: 24.08.2023
+    Последнее изменение: 24.09.2023
     
     Известные учётные записи системы:
     - Администратор[administrator: adminadmin]
     - Тестовые учётки обычных пользователей [логин заканчивается на test_N, пароль 8 единиц: 11111111]
+
+    *Известные проблемы, которые можно пофикситить, а можно и не фиксить, т.к. проект учебный всё равно, никому вроде бы и не нужно:*
+
+    1. Некоторые методы возвращают хэш от пароля клиента (он там совсем не нужен, это небезопасно).
+    2. При аггрегации комментов желательно подтягивать логины комментаторов (там пока просто ID возвращается).
+    3. Желательно добавить в mongo схемы поле _id, т.к. без такого явно объявленного поля невозможны методы mongoose типа findById и т.д. Короче, есть разница между _id и id.
+    4. Желательно описать в swagger все используемые перечисления, т.к. для перечисляемых типов бэк возвращает number, который нужно распознавать в соответствии с перечислением.
+    5. Сделать честное хранилище файлов в файловой системе. Потому что неэтично заставлять пользователя подтягивать данные с чужих сайтов. Можно легко сделать для изображений, для целых постов задача усложняется. Пока что не сделано.
 
     Некоторые полезные ссылки:
     - [Сайт информационного портала](http://77.222.60.117/)
@@ -93,13 +101,7 @@ paths:
       description: Получить информацию о пользователе через id
       summary: Получить информацию о пользователе через id
       parameters:
-        - name: id
-          required: true
-          in: path
-          description: id пользователя
-          schema:
-            type: string
-            default: 64dcd283ae9f52b020922efa
+        - $ref: "#/components/parameters/elementIdPathParam"
         
       responses:
         '200':
@@ -133,13 +135,7 @@ paths:
       description: Обновить информацию о пользователе
       summary: Обновить информацию о пользователе
       parameters:
-        - name: id
-          required: true
-          in: path
-          description: id пользователя
-          schema:
-            type: string
-            default: 64dcd283ae9f52b020922efa
+        - $ref: "#/components/parameters/elementIdPathParam"
       requestBody:
         required: true
         description: Значения полей, которые пользователь хочет обновить. Некоторые поля невозможно изменить (например, дату создания поста)
@@ -184,13 +180,7 @@ paths:
       description: Удалить пользователя (может только админ, модератор не может. (добавить модератора?))
       summary: Удалить пользователя (может только админ, модератор не может, пока что. (добавить?))
       parameters:
-        - name: id
-          required: true
-          in: path
-          description: id пользователя
-          schema:
-            type: string
-            default: 64dcd283ae9f52b020922efa
+        - $ref: "#/components/parameters/elementIdPathParam"
       responses:
         '200':
           description: Успешная операция
@@ -266,6 +256,13 @@ paths:
       summary: Получить список постов с заданными параметрами
       description: Получить весь список постов
       parameters:
+        - name: titleQuery
+          in: query
+          description: Запрос поиска по заголовку поста
+          schema:
+            type: string
+            default: null
+            example: Введение в
         - name: page
           in: query
           description: Номер страницы для пагинации
@@ -312,13 +309,7 @@ paths:
       description: Получить пост по **ID**
       summary: Получить тело поста с заданным ID
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: string
-          required: true
-          description: ID поста, для которого выполнится поиск тела
-          example: 64dcd283ae9f52b020922f45
+        - $ref: "#/components/parameters/elementIdPathParam"
       responses:
         '200':
           description: Успешная операция
@@ -356,13 +347,7 @@ paths:
       description:  Модифицировать запись о посте с заданным **ID**
       summary: Модифицировать запись о посте с заданным ID
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: string
-          required: true
-          description: ID поста, тело которого редактируется
-          example: 64dcd283ae9f52b020922f45
+        - $ref: "#/components/parameters/elementIdPathParam"
       requestBody:
         required: true
         description: Значения полей, которые пользователь хочет обновить. Некоторые поля невозможно изменить (например, дату создания поста)
@@ -415,15 +400,9 @@ paths:
       summary: Удалить пост с заданным ID (ADMIN only)
       security:
         - portalAuth: []
-      
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: string
-          required: true
-          description: ID поста, который будет удаляться
-          example: 64dcd283ae9f52b020922f45
+        - $ref: "#/components/parameters/postIdPathParam"
+          description: ID удаляемого элемента
       responses:
         '200':
           description: Успешная операция
@@ -587,13 +566,7 @@ paths:
       - Тэги 
       summary: Получение тега по ID
       parameters:
-        - name: id
-          in: path
-          description: ID искомого тега
-          schema:
-            type: string
-            default: null
-          required: true
+        - $ref: "#/components/parameters/elementIdPathParam"
       responses:
         '200':
           description: Успешная операция
@@ -607,13 +580,7 @@ paths:
       - Тэги 
       summary: Обновление информации о теге [Админ/модератор]
       parameters:
-        - name: id
-          in: path
-          description: ID обновляемого поста (path параметр)
-          schema:
-            type: string
-            default: null
-          required: true
+        - $ref: "#/components/parameters/elementIdPathParam"
         - name: name
           in: query
           description: Новое название для обновляемого тега
@@ -639,6 +606,8 @@ paths:
       tags:
       - Тэги 
       summary: Удаление тега [Админ/модератор]
+      parameters:
+        - $ref: "#/components/parameters/elementIdPathParam"
       responses:
         '200':
           description: Успешная операция
@@ -706,13 +675,7 @@ paths:
       - Комментарии
       summary: Получить информацию о комментарии
       parameters:
-        - name: id
-          in: path
-          description: ID комментария, тело которого запрашивается
-          schema:
-            type: string
-            default: null
-          required: true
+        - $ref: "#/components/parameters/elementIdPathParam"
       responses:
         '200':
           description: Успешная операция
@@ -725,13 +688,7 @@ paths:
       - Комментарии
       summary: Оставить комментарий к посту/другому комментарию
       parameters:
-        - name: id
-          in: path
-          description: ID Цели, которую нужно прокомментировать
-          schema:
-            type: string
-            default: null
-          required: true
+        - $ref: "#/components/parameters/elementIdPathParam"
       requestBody:
         required: true
         description: "Тело комментария. Массив различного контента, где каждый элемент это {код элемента + Data.Mixed}"
@@ -743,7 +700,20 @@ paths:
                 body:
                   type: string
                   example: object
-
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Недостаточно доступа
+        '403':
+          description: Проблема 
+    put:
+      tags:
+        - Комментарии
+      summary: Отредактировать комментарий. После редактирования установится флаг wasEdited = true
+      description: Отредактировать комментарий. После редактирования установится флаг wasEdited = true, который нельзя будет сбросить обратно.
+      parameters:
+        - $ref: "#/components/parameters/elementIdPathParam"
       responses:
         '200':
           description: Успешная операция
@@ -755,6 +725,8 @@ paths:
       tags:
       - Комментарии
       summary: Удалить комментарий (удалить свой/ удалить чужой через админа/модератора)
+      parameters:
+        - $ref: "#/components/parameters/elementIdPathParam"
       responses:
         '200':
           description: Успешная операция
@@ -768,13 +740,7 @@ paths:
       - Комментарии
       summary: Собрать список комментариев для данной цели (пост/другой коммент)
       parameters:
-        - name: id
-          in: path
-          description: ID поста/коммента, для которого аггрегируются комментарии
-          schema:
-            type: string
-            default: null
-          required: true
+        - $ref: "#/components/parameters/elementIdPathParam"
       responses:
         '200':
           description: Успешная операция
@@ -783,19 +749,12 @@ paths:
         '403':
           description: Проблема авторизации
   /karma/rate/{id}:
-    post:
+    put:
       tags:
         - "Карма"
       summary: Добавить/убрать карму к посту/комментарию. (самолайк можно, пока что)
-      deprecated: true
       parameters:
-        - name: id
-          in: path
-          description: ID поста/коммента, который оценивается кармой
-          schema:
-            type: string
-            default: null
-          required: true
+        - $ref: "#/components/parameters/elementIdPathParam"
         - name: ratingMethod
           in: query
           description: Действие оценивания (лайк/дизлайк/снять оценку)
@@ -1024,6 +983,37 @@ components:
         - "like"
         - "dislike"
         - "reset"
+  parameters:
+    elementIdPathParam:
+      name: id
+      in: path
+      description: ID элемента
+      required: true
+      schema:
+        type: string
+        minLength: 24
+        maxLength: 24
+        example: 64dcd283ae9f52b020922f45
+    postIdPathParam:
+      name: id
+      in: path
+      description: ID поста
+      required: true
+      schema:
+        type: string
+        minLength: 24
+        maxLength: 24
+        example: 64dcd283ae9f52b020922f45
+    postIdQueryParam:
+      name: id
+      in: query
+      description: ID поста
+      required: true
+      schema:
+        type: string
+        minLength: 24
+        maxLength: 24
+      example: 64dcd283ae9f52b020922f45
   requestBodies:
     UserArray:
       description: Массив пользователей

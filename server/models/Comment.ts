@@ -13,8 +13,8 @@ const CommentSchema = new Schema({
      creationDate: {type: Date, required: true, default: Date()},                 ///< Дата создания комментария
      replies: [ObjectId],                                        ///< Список реплаев к комменту
      karmaCounter: {type: Number, required: true, default: 0},   ///< Счетчик кармы
-     wasEdited: {type: Boolean, default: false},
-     likedBy: [ObjectId]                                         ///< Кому понравился пост     
+     wasEdited: {type: Boolean, default: false}
+     // likedBy: [ObjectId]                                         ///< Кому понравился пост     
 })
 
 /** Комментарий участника сообщества.  */

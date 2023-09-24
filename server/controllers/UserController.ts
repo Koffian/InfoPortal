@@ -129,16 +129,6 @@ class UserController
           {
                let usernameQuery = req.query.username || "";
 
-               // if (typeof(usernameQuery) != typeof(String))
-               // {
-               //      Logger.error("Can't find users with undefined login");
-
-               //      return ReturnAPIResponse(res, new API_ErrorResponse(
-               //           StatusCodes.BadRequest,
-               //           KnownErrors.BadParams, 
-               //           "Логин для поиска не определен"));
-               // }
-
                Logger.info("Производится поиск пользователей по логину")
 
                let userArray: object = {};
@@ -156,7 +146,7 @@ class UserController
                     users: userCards
                };
 
-               console.log("Отдан список постов")
+               console.log("Отдан список пользователей")
 
                return ReturnAPIResponse(res, new API_Response(
                     StatusCodes.Success,

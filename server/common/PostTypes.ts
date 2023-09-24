@@ -33,6 +33,9 @@ export const ContentTypes = {
      Formula: 8,         ///< Формула
      Spoiler: 9,         ///< Спойлер
 
+
+
+     
      // Собственные типы
      Paragraph: 10       ///< Параграф
 }
