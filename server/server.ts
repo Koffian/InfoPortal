@@ -41,7 +41,7 @@ app.use("/karma", karmaRouter)
 
 /** Для дебага. Вернуть строку по корню / */
 app.get('/', (req, res) => {
-     res.send('backend-API информационного портала');
+     res.send('backend-API информационного портала. arbitraryQuery: "' + req.query.arbitraryQuery + '"');
    });
 
 const Start = async() => {

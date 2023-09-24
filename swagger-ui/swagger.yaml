@@ -46,6 +46,14 @@ paths:
         - Пинг
       description: Получить респонс от API. Если метод не работает, возможны проблемы с CROSS-ORIGIN и проч сетевыми настройками.
       summary: Получить респонс от API. Если метод не работает, то API недоступно
+      parameters:
+        - name: arbitraryQuery
+          in: query
+          description: Тестирование query
+          schema:
+            type: string
+            default: queryExample
+            example: "queryExample"
       responses:
         '200':
           description: Успешная операция
