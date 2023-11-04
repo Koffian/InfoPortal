@@ -50,12 +50,9 @@ app.use("/karma", karmaRouter);
 
 /** Для дебага. Вернуть строку по корню / */
 app.get("/", async (req, res) => {
-  const postfound = await Post.find();
-  const postnumber = postfound.length;
-  const usersfound = await User.find();
-  const usernumber = usersfound.length;
-  const tagsfound = await Tag.find();
-  const tagsnumber = tagsfound.length;
+  const postnumber = (await Post.find()).length;
+  const usernumber = (await User.find()).length;
+  const tagsnumber = (await Tag.find()).length;
   const commentnumber = (await Comment.find()).length;
   console.log("Кол-во постов:" + postnumber);
   let portalStatistics = {
