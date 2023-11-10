@@ -15,7 +15,9 @@ const UserSchema = new Schema({
           targetId: {type: ObjectId}
           }
      ],                                      ///< На какие элементы отреагировал пользователь
-     postsCreatedList: [ObjectId]                                ///< Список созданных постов
+     postsCreatedList: [ObjectId],                                ///< Список созданных постов
+     karma: {type: Number, required: true, default: 0,} /// - Общая карма пользователей (включая посты и комментарии)
+     
 })
 
 const User = connection.model("User", UserSchema)

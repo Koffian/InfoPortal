@@ -20,6 +20,7 @@ class StatisticController {
        postsFound: postNumber,
        tagsFound: tagNumber,
        usersFound: userNumber,
+       currentDate: new Date()
      };
      
      return ReturnAPIResponse(res, new API_Response(

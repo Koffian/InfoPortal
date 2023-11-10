@@ -801,6 +801,8 @@ paths:
       tags:
         - "Хранилище"
       summary: Получить изображение с заданным ID
+      parameters:
+        - $ref: "#/components/parameters/elementIdPathParam"
       responses:
         '200':
           description: Успешная операция
@@ -809,6 +811,15 @@ paths:
       tags:
         - "Хранилище"
       summary: Загрузить изображение в файловое хранилище и получить его ID в случае успеха
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
       responses:
         '200':
           description: Успешная операция

@@ -104,6 +104,47 @@ class TagController {
           }
      }
 
+     async DeleteTag(req : Request, res : Response){
+          try {
+               const tagIdQuery = req.params.id
+
+               if (tagIdQuery === "") 
+               {
+                    return ReturnAPIResponse(res, new API_ErrorResponse(
+                         StatusCodes.BadRequest,
+                         KnownErrors.BadParams,
+                         "Невозможно оставить пустное название у тега. Укажите название"
+                    ));
+               }
+               console.log(tagIdQuery)
+               const tagFound: any = await Tag.findById(tagIdQuery)
+               const deletedTag: any = await Tag.deleteOne({_id: tagIdQuery})
+
+               if (!tagFound)
+               {
+                    return ReturnAPIResponse(res, new API_ErrorResponse(
+                         StatusCodes.NotFound,
+                         KnownErrors.NotFound,
+                         "Тег не найден, не удалось удалить тег: "
+                    ));
+               }
+
+               return ReturnAPIResponse(res, new API_Response(
+                    StatusCodes.Success,
+                    tagFound,
+                    "Успешно удалён тег: "
+               ));
+          }
+          catch (e) {
+               console.log("Ошибка удаления тэга: " + e)
+               return ReturnAPIResponse(res, new API_ErrorResponse(
+                    StatusCodes.InternalError,
+                    KnownErrors.InternalError,
+                    "ошибка удаления тега: " + e
+               ));
+          }
+     }
+
      async FindTags(req: any, res: Response)
      {
           try {

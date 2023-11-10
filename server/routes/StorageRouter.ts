@@ -7,7 +7,7 @@ const router = Router()
 
 router.get("/:id", StorageController.GetImage)
 
-router.post("/upload", upload.single('file'))
+router.post("/upload", upload.single('file'), StorageController.UploadImage)
 
 
 export {router as storageRouter}

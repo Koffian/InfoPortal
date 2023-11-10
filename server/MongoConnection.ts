@@ -52,7 +52,6 @@ const storage = new GridFsStorage({
                description: "Изображение png/jpeg/jpg"
                }
            };
-           console.log("Изображение " + file.originalName + " сохранено в БД под названием " + filename )
            resolve(fileInfo);
           });
           });

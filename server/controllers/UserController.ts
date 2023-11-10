@@ -136,8 +136,8 @@ class UserController
                const usersFound = await User.find({ "username" : { $regex: usernameQuery, $options: 'i' } });
 
                let userCards: any = usersFound.map(user => {
-                    const {_id , username, access } = user;
-                    return {_id , username, access };
+                    const {_id , username, access, karma } = user;
+                    return {_id , username, access, karma };
                });
 
                // Построить массив url'ов изображений с метадатой

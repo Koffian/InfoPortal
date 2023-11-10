@@ -148,7 +148,7 @@ export async function ReactToElement(userDocument: any, elementDocument: any, ra
                {
                     if (userDocument.reactionList.at(i)?.targetId == elementDocument.id)
                     {
-                         /// Поменять реакцию на контент. Удалить из списка реакций
+                         /// Поменять реакцию на контент.
                          index = i
                          console.log("Updating reaction " + i)
                          break;
@@ -160,8 +160,14 @@ export async function ReactToElement(userDocument: any, elementDocument: any, ra
                console.log("Изменяем карму элемента после обновления реакции: " + karmaDiff)
                elementDocument.karmaCounter += karmaDiff
           }
+
+          /// Обновление общей кармы автора
+          const author: any = await User.find({_id: userDocument.createdBy})
+          author.karma += karmaDiff;
+
           await userDocument.save()
           await elementDocument.save()
+          await author.save()
 
           return 0
      } 

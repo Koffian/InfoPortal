@@ -17,6 +17,9 @@ router.post("/", RequireAccessLevelMiddleware([AccessLevel.Moderator, AccessLeve
 /*Обновить информацию о теге (от имени модератора или администратора)  */
 router.put("/:id", RequireAccessLevelMiddleware([AccessLevel.Moderator, AccessLevel.Administrator]), TagController.UpdateTag)
 
+/** Удалить тег из системы (от имени модератора или администратора) */
+router.delete("/:id", RequireAccessLevelMiddleware([AccessLevel.Moderator, AccessLevel.Administrator]), TagController.DeleteTag)
+
 /** Привязать существующий тег к элементу */
 router.post("/push/:id", RequireAccessLevelMiddleware([AccessLevel.Moderator, AccessLevel.Administrator]), TagController.PushTag)
 

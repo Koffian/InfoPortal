@@ -2,6 +2,8 @@
 import { Document, ObjectId } from "mongodb";
 import { gfs, gridfsBucket, upload } from "../MongoConnection";
 import { Request, Response } from "express"
+import { ReturnAPIResponse } from "../common/helpers/Responses";
+import { API_Response, StatusCodes } from "../common/types/API_Responses";
 
 /**
  * Контролер для работы с изображениями с помощью GridFS в MongoDB
@@ -9,24 +11,32 @@ import { Request, Response } from "express"
 class StorageController {
 
      /** Не нужно сохранение в контроллере, т.к. middleware upload.single() сразу кладёт в хранилище GridFS */
-     // async UploadImage(req : Request, res : Response){
-     //      try {
-     //           if (!req.file) {
-     //                console.log("Не прикреплен файл")
-     //                return res.status(400).json({ message: 'No file received' });
-     //           }
-     //           console.log(req.file)
+     async UploadImage(req : Request, res : Response){
+          try {
+               if (!req.file) {
+                    console.log("Не прикреплен файл")
+                    return res.status(400).json({ message: 'No file received' });
+               }
 
-     //           return res.status(200).json({message: "загружен файл " + req.file})
-     //           }
-     //      catch (e) {
-     //           console.log("ошибка загрузки изображения: " + e)
-     //      }
-     // }
+               console.log("id:")
+               console.log(req.file.id);
+               
+
+               return ReturnAPIResponse(res, new API_Response(
+                    StatusCodes.Success, 
+                    {id: req.file.id.toString(), data: req.file},
+                    "Изображение успешно загружено"
+               ));
+               }
+          catch (e) {
+               console.log("ошибка загрузки изображения: " + e)
+          }
+     }
+
+     
 
      async GetImage(req: Request, res: Response){
           try {
-
                if (req.params.id === undefined)
                {
                     console.log("Клиент не указал id изображения")
@@ -35,7 +45,7 @@ class StorageController {
 
                const imageID = new ObjectId(req.params.id)
 
-               console.log("Получаем изображение с id: " + imageID)
+               console.log("Отдаём изображение с id: " + imageID)
 
                const imageFile = await gfs.files.findOne({ _id: imageID})!;
 
