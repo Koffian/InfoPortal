@@ -90,7 +90,7 @@ const InitializeServer = async() =>
                     createdBy: authorUser._id,
                     body: [
                          {
-                              type: ContentTypes.Paragraph,
+                              type: ContentTypes.Text,
                               content: "Это простой тестовый параграф"
                          },
                          {
