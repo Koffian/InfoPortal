@@ -2,16 +2,11 @@ import express, { NextFunction, Request, Response } from "express";
 
 import { authRouter } from "./routes/AuthRouter";
 import { userRouter } from "./routes/UserRouter";
-import { uploadRouter } from "./routes/UploadRouter";
 import { postsRouter } from "./routes/PostRouter";
-import { imageRouter } from "./routes/ImageRouter";
 import { tagRouter } from "./routes/TagRouter";
 import { karmaRouter } from "./routes/KarmaRouter";
 import { statisticRouter } from "./routes/StatisticRouter";
-import Post from "./models/Post";
-import Comment from "./models/Comment";
-import User from "./models/User";
-import Tag from "./models/Tag";
+import { storageRouter } from "./routes/StorageRouter";
 
 import Logger from "./common/Logger";
 import { Network } from "./common/Network";
@@ -43,28 +38,13 @@ app.use("/users", userRouter);
 app.use("/posts", postsRouter);
 app.use("/tags", tagRouter);
 app.use("/statistics", statisticRouter);
-app.use("/upload", uploadRouter);
-app.use("/image", imageRouter);
+app.use("/storage", storageRouter);
 app.use("/comments", commentRouter);
 app.use("/karma", karmaRouter);
 
 /** Для дебага. Вернуть строку по корню / */
 app.get("/", async (req, res) => {
-  const postfound = await Post.find();
-  const postnumber = postfound.length;
-  const usersfound = await User.find();
-  const usernumber = usersfound.length;
-  const tagsfound = await Tag.find();
-  const tagsnumber = tagsfound.length;
-  const commentnumber = (await Comment.find()).length;
-  console.log("Кол-во постов:" + postnumber);
-  let portalStatistics = {
-    postsFound: postnumber,
-    usersFound: usernumber,
-    tagsFound: tagsnumber,
-    commentFound: commentnumber,
-  };
-  res.status(200).json(portalStatistics);
+  res.send("Backend-Api информационного портала, размещённого по адресу " + Network.hostName);
 });
 
 const Start = async () => {

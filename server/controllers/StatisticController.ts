@@ -1,28 +1,34 @@
-import { Request, Response } from "express";
-import {
-  API_ErrorResponse,
-  API_Response,
-  KnownErrors,
-  StatusCodes,
-} from "../common/types/API_Responses";
-import { ReturnAPIResponse } from "../common/helpers/Responses";
+import { Response } from "express";
+
 import Post from "../models/Post";
 import Comment from "../models/Comment";
 import User from "../models/User";
-import {
-  ReactToElement,
-  GetRatingMethodCode,
-} from "../common/helpers/KarmaHelpers";
-import { Console } from "winston/lib/winston/transports";
+import Tag from "../models/Tag";
+import { API_Response, StatusCodes } from "../common/types/API_Responses";
+import { ReturnAPIResponse } from "../common/helpers/Responses";
 
 /** Контроллер статистики */
 class StatisticController {
-  async GetStatistic(req: any, res: Response) {
-    const postfound = await Post.find();
-    const postnumber = postfound.length;
-    console.log("Кол-во постов:" + postnumber);
-    Post.count;
+/** Запрос сводной информации о состоянии сепрвера */
+  async GetAllStatistic(req: any, res: Response) {
+     const commentNumber = (await Comment.find()).length;
+     const postNumber = (await Post.find()).length;
+     const tagNumber = (await Tag.find()).length;
+     const userNumber = (await User.find()).length;
+     let portalStatistics = {
+       commentFound: commentNumber,
+       postsFound: postNumber,
+       tagsFound: tagNumber,
+       usersFound: userNumber,
+     };
+     
+     return ReturnAPIResponse(res, new API_Response(
+          StatusCodes.Success,
+          portalStatistics,
+          "Успешно отдана информация о состоянии сервера"
+     )); 
   }
 }
+
 var controller = new StatisticController();
 export { controller };

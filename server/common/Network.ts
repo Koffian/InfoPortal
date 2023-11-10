@@ -11,5 +11,5 @@ export namespace Network {
   export const hostName = "http://" + hostAddress + ":" + hostPort;
 
   /** URL для работы с MongoDB */
-  export const mongoURL = "mongodb://127.0.0.1:27200/portal";
+  export const mongoURL = "mongodb://127.0.0.1:27020/portal";
 }

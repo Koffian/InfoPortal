@@ -31,9 +31,8 @@ connection.once('open', () => {
 
 /**
      Хранилище загружаемых файлов GridFS из MongoDB.
-     Файлы разбиваются на чанки
+     Файлы хранятся в виде чанков в Mongo
 */ 
-
 const storage = new GridFsStorage({
      url: Network.mongoURL,
      file: (req, file) => {
@@ -53,6 +52,7 @@ const storage = new GridFsStorage({
                description: "Изображение png/jpeg/jpg"
                }
            };
+           console.log("Изображение " + file.originalName + " сохранено в БД под названием " + filename )
            resolve(fileInfo);
           });
           });

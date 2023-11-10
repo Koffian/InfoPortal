@@ -6,7 +6,7 @@ import { Request, Response } from "express"
 /**
  * Контролер для работы с изображениями с помощью GridFS в MongoDB
  */
-class ImageController {
+class StorageController {
 
      /** Не нужно сохранение в контроллере, т.к. middleware upload.single() сразу кладёт в хранилище GridFS */
      // async UploadImage(req : Request, res : Response){
@@ -65,5 +65,5 @@ class ImageController {
      }
 }
 
-var controller = new ImageController()
+var controller = new StorageController()
 export { controller }

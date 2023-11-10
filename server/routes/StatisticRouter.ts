@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { controller as ImageController } from "../controllers/ImageController";
+import { controller as StatisticController } from "../controllers/StatisticController";
 
 const router = Router();
 
-router.get("/", ImageController.GetImage);
+/** Роутер получения статистики - сводной информации о состоянии сервера */
+
+router.get("/", StatisticController.GetAllStatistic);
 
 export { router as statisticRouter };
