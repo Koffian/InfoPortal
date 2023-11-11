@@ -796,6 +796,14 @@ paths:
           description: Недостаточно доступа
         '403':
           description: Проблема авторизации
+  /storage/:
+    get:
+      tags:
+        - "Хранилище"
+      summary: Получить информацию о всём содержимом файлового хранилища
+      responses:
+        '200':
+          description: Успешная операция
   /storage/{id}:
     get:
       tags:

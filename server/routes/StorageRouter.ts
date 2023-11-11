@@ -7,6 +7,8 @@ const router = Router()
 
 router.get("/:id", StorageController.GetImage)
 
+router.get("/", StorageController.GetAllImages)
+
 router.post("/upload", upload.single('file'), StorageController.UploadImage)
 
 

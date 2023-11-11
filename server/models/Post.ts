@@ -9,7 +9,7 @@ const PostSchema = new Schema({
      createdBy: {type: ObjectId, ref: 'User', required: true},        ///< Id создателя
      body: [
           {
-               type: {type: Number},
+               contentType: {type: Number},
                content: Schema.Types.Mixed
           }
      ],                                                               ///< Содержимое поста
