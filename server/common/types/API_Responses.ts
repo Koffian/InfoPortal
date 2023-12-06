@@ -44,11 +44,10 @@ interface IAPI_Response {
 
 export class API_Response implements IAPI_Response 
 {
+     private body: object = {};
      code: number;
-     httpCode: number;
-     body: object = {};
      description: string = "";
-
+     httpCode: number;
      constructor(statusCode: StatusCode, body?: object, optionalDescription?: string)
      {
           this.code = statusCode.code;
@@ -149,7 +148,7 @@ function DecodeError(errorCode: number)
 
 export class API_ErrorResponse extends API_Response
 {
-     errorCode: number;
+     private errorCode: number;
      description: string = "";
 
      constructor(statusCode: StatusCode, error: KnownError, extraDescription?: string)

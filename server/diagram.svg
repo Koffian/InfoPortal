@@ -1,0 +1,214 @@
+<svg version="1.1" baseProfile="full" width="2658.0" height="216.0" viewbox="0 0 2658 216" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">
+<desc >#.interface: fill=lightblue
+#.enumeration: fill=lightgreen
+#.type: fill=lightgray
+[CommentController||+CreateComment(): Promise&lt;void&gt;;+GetComment(): Promise&lt;void&gt;;+EditComment(): Promise&lt;void&gt;;+DeleteComment(): Promise&lt;void&gt;;+AggregateComments(): Promise&lt;void&gt;]
+[KarmaController||+ReactToContent(): Promise&lt;void&gt;]
+[PostController||+GetPosts(): Promise&lt;void&gt;;+GetPostByURL(): Promise&lt;void&gt;;+UpdatePost(): Promise&lt;void&gt;;+CreatePost(): Promise&lt;void&gt;;+DeletePost(): Promise&lt;void&gt;]
+[StatisticController||+GetAllStatistic(): Promise&lt;void&gt;]
+[StorageController||+UploadImage(): Promise&lt;void \| Response&lt;any, Record&lt;string, any&gt;&gt;&gt;;+GetImage(): Promise&lt;Response&lt;any, Record&lt;string, any&gt;&gt; \| undefined&gt;;+GetAllImages(): Promise&lt;void&gt;;+DeleteImage(): Promise&lt;void&gt;]
+[TagController||+CreateNewTag(): Promise&lt;void&gt;;+UpdateTag(): Promise&lt;void&gt;;+DeleteTag(): Promise&lt;void&gt;;+FindTags(): Promise&lt;void&gt;;+PushTag(): Promise&lt;void&gt;;+PopTag(): Promise&lt;void&gt;;+GetTagByID(): Promise&lt;void&gt;]
+[UserController||+RegisterUser(): Promise&lt;void&gt;;+LogIn(): Promise&lt;void&gt;;+FindUsers(): Promise&lt;void&gt;;+UpdateUserById(): Promise&lt;void&gt;;+DeleteUserById(): Promise&lt;void&gt;;+GetUserByQuery(): Promise&lt;void&gt;;+FindUserByID(): Promise&lt;void&gt;]</desc>
+<g stroke-width="1.0" text-align="left" font="12pt Helvetica, Arial, sans-serif" font-size="12pt" font-family="Helvetica" font-weight="normal" font-style="normal">
+<g font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" stroke-width="3.0" stroke-linejoin="round" stroke-linecap="round" stroke="#33322E">
+<g stroke="transparent" fill="transparent">
+<rect x="0.0" y="0.0" height="216.0" width="2658.0" stroke="none"></rect>
+</g>
+<g transform="translate(8, 8)" fill="#33322E">
+<g transform="translate(20, 20)">
+<g data-name="CommentController">
+<g fill="#eee8d5" stroke="#33322E" data-name="CommentController">
+<rect x="0.0" y="15.0" height="130.0" width="331.0" data-name="CommentController"></rect>
+<path d="M0.0 46.0 L331.0 46.0" fill="none" data-name="CommentController"></path>
+<path d="M0.0 54.0 L331.0 54.0" fill="none" data-name="CommentController"></path>
+</g>
+<g transform="translate(0, 15)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="CommentController">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="CommentController">
+<a id="controllers\CommentController.ts.CommentController" xlink:href="controllers\CommentController.ts"><text x="157.5" y="13.5" stroke="none" text-anchor="middle" data-name="CommentController">CommentController</text></a>
+
+</g>
+</g>
+<g transform="translate(0, 46)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CommentController">
+<g transform="translate(8, 8)" fill="#33322E" data-name="CommentController">
+
+</g>
+</g>
+<g transform="translate(0, 54)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CommentController">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="CommentController">
+<text x="0.0" y="13.5" stroke="none" data-name="CommentController">+CreateComment(): Promise&lt;void&gt;</text>
+<text x="0.0" y="28.5" stroke="none" data-name="CommentController">+GetComment(): Promise&lt;void&gt;</text>
+<text x="0.0" y="43.5" stroke="none" data-name="CommentController">+EditComment(): Promise&lt;void&gt;</text>
+<text x="0.0" y="58.5" stroke="none" data-name="CommentController">+DeleteComment(): Promise&lt;void&gt;</text>
+<text x="0.0" y="73.5" stroke="none" data-name="CommentController">+AggregateComments(): Promise&lt;void&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="KarmaController">
+<g fill="#eee8d5" stroke="#33322E" data-name="KarmaController">
+<rect x="371.0" y="45.0" height="70.0" width="293.0" data-name="KarmaController"></rect>
+<path d="M371.0 76.0 L664.0 76.0" fill="none" data-name="KarmaController"></path>
+<path d="M371.0 84.0 L664.0 84.0" fill="none" data-name="KarmaController"></path>
+</g>
+<g transform="translate(371, 45)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="KarmaController">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="KarmaController">
+<a id="controllers\KarmaController.ts.KarmaController" xlink:href="controllers\KarmaController.ts"><text x="138.5" y="13.5" stroke="none" text-anchor="middle" data-name="KarmaController">KarmaController</text></a>
+
+</g>
+</g>
+<g transform="translate(371, 76)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="KarmaController">
+<g transform="translate(8, 8)" fill="#33322E" data-name="KarmaController">
+
+</g>
+</g>
+<g transform="translate(371, 84)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="KarmaController">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="KarmaController">
+<text x="0.0" y="13.5" stroke="none" data-name="KarmaController">+ReactToContent(): Promise&lt;void&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="PostController">
+<g fill="#eee8d5" stroke="#33322E" data-name="PostController">
+<rect x="704.0" y="15.0" height="130.0" width="282.0" data-name="PostController"></rect>
+<path d="M704.0 46.0 L986.0 46.0" fill="none" data-name="PostController"></path>
+<path d="M704.0 54.0 L986.0 54.0" fill="none" data-name="PostController"></path>
+</g>
+<g transform="translate(704, 15)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="PostController">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="PostController">
+<a id="controllers\PostController.ts.PostController" xlink:href="controllers\PostController.ts"><text x="133.0" y="13.5" stroke="none" text-anchor="middle" data-name="PostController">PostController</text></a>
+
+</g>
+</g>
+<g transform="translate(704, 46)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PostController">
+<g transform="translate(8, 8)" fill="#33322E" data-name="PostController">
+
+</g>
+</g>
+<g transform="translate(704, 54)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PostController">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="PostController">
+<text x="0.0" y="13.5" stroke="none" data-name="PostController">+GetPosts(): Promise&lt;void&gt;</text>
+<text x="0.0" y="28.5" stroke="none" data-name="PostController">+GetPostByURL(): Promise&lt;void&gt;</text>
+<text x="0.0" y="43.5" stroke="none" data-name="PostController">+UpdatePost(): Promise&lt;void&gt;</text>
+<text x="0.0" y="58.5" stroke="none" data-name="PostController">+CreatePost(): Promise&lt;void&gt;</text>
+<text x="0.0" y="73.5" stroke="none" data-name="PostController">+DeletePost(): Promise&lt;void&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="StatisticController">
+<g fill="#eee8d5" stroke="#33322E" data-name="StatisticController">
+<rect x="1026.0" y="45.0" height="70.0" width="274.0" data-name="StatisticController"></rect>
+<path d="M1026.0 76.0 L1300.0 76.0" fill="none" data-name="StatisticController"></path>
+<path d="M1026.0 84.0 L1300.0 84.0" fill="none" data-name="StatisticController"></path>
+</g>
+<g transform="translate(1026, 45)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="StatisticController">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="StatisticController">
+<a id="controllers\StatisticController.ts.StatisticController" xlink:href="controllers\StatisticController.ts"><text x="129.0" y="13.5" stroke="none" text-anchor="middle" data-name="StatisticController">StatisticController</text></a>
+
+</g>
+</g>
+<g transform="translate(1026, 76)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="StatisticController">
+<g transform="translate(8, 8)" fill="#33322E" data-name="StatisticController">
+
+</g>
+</g>
+<g transform="translate(1026, 84)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="StatisticController">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="StatisticController">
+<text x="0.0" y="13.5" stroke="none" data-name="StatisticController">+GetAllStatistic(): Promise&lt;void&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="StorageController">
+<g fill="#eee8d5" stroke="#33322E" data-name="StorageController">
+<rect x="1340.0" y="22.5" height="115.0" width="602.0" data-name="StorageController"></rect>
+<path d="M1340.0 53.5 L1942.0 53.5" fill="none" data-name="StorageController"></path>
+<path d="M1340.0 61.5 L1942.0 61.5" fill="none" data-name="StorageController"></path>
+</g>
+<g transform="translate(1340, 22.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="StorageController">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="StorageController">
+<a id="controllers\StorageController.ts.StorageController" xlink:href="controllers\StorageController.ts"><text x="293.0" y="13.5" stroke="none" text-anchor="middle" data-name="StorageController">StorageController</text></a>
+
+</g>
+</g>
+<g transform="translate(1340, 53.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="StorageController">
+<g transform="translate(8, 8)" fill="#33322E" data-name="StorageController">
+
+</g>
+</g>
+<g transform="translate(1340, 61.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="StorageController">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="StorageController">
+<text x="0.0" y="13.5" stroke="none" data-name="StorageController">+UploadImage(): Promise&lt;void | Response&lt;any, Record&lt;string, any&gt;&gt;&gt;</text>
+<text x="0.0" y="28.5" stroke="none" data-name="StorageController">+GetImage(): Promise&lt;Response&lt;any, Record&lt;string, any&gt;&gt; | undefined&gt;</text>
+<text x="0.0" y="43.5" stroke="none" data-name="StorageController">+GetAllImages(): Promise&lt;void&gt;</text>
+<text x="0.0" y="58.5" stroke="none" data-name="StorageController">+DeleteImage(): Promise&lt;void&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="TagController">
+<g fill="#eee8d5" stroke="#33322E" data-name="TagController">
+<rect x="1982.0" y="0.0" height="160.0" width="282.0" data-name="TagController"></rect>
+<path d="M1982.0 31.0 L2264.0 31.0" fill="none" data-name="TagController"></path>
+<path d="M1982.0 39.0 L2264.0 39.0" fill="none" data-name="TagController"></path>
+</g>
+<g transform="translate(1982, 0)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="TagController">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="TagController">
+<a id="controllers\TagController.ts.TagController" xlink:href="controllers\TagController.ts"><text x="133.0" y="13.5" stroke="none" text-anchor="middle" data-name="TagController">TagController</text></a>
+
+</g>
+</g>
+<g transform="translate(1982, 31)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="TagController">
+<g transform="translate(8, 8)" fill="#33322E" data-name="TagController">
+
+</g>
+</g>
+<g transform="translate(1982, 39)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="TagController">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="TagController">
+<text x="0.0" y="13.5" stroke="none" data-name="TagController">+CreateNewTag(): Promise&lt;void&gt;</text>
+<text x="0.0" y="28.5" stroke="none" data-name="TagController">+UpdateTag(): Promise&lt;void&gt;</text>
+<text x="0.0" y="43.5" stroke="none" data-name="TagController">+DeleteTag(): Promise&lt;void&gt;</text>
+<text x="0.0" y="58.5" stroke="none" data-name="TagController">+FindTags(): Promise&lt;void&gt;</text>
+<text x="0.0" y="73.5" stroke="none" data-name="TagController">+PushTag(): Promise&lt;void&gt;</text>
+<text x="0.0" y="88.5" stroke="none" data-name="TagController">+PopTag(): Promise&lt;void&gt;</text>
+<text x="0.0" y="103.5" stroke="none" data-name="TagController">+GetTagByID(): Promise&lt;void&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="UserController">
+<g fill="#eee8d5" stroke="#33322E" data-name="UserController">
+<rect x="2304.0" y="0.0" height="160.0" width="298.0" data-name="UserController"></rect>
+<path d="M2304.0 31.0 L2602.0 31.0" fill="none" data-name="UserController"></path>
+<path d="M2304.0 39.0 L2602.0 39.0" fill="none" data-name="UserController"></path>
+</g>
+<g transform="translate(2304, 0)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="UserController">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="UserController">
+<a id="controllers\UserController.ts.UserController" xlink:href="controllers\UserController.ts"><text x="141.0" y="13.5" stroke="none" text-anchor="middle" data-name="UserController">UserController</text></a>
+
+</g>
+</g>
+<g transform="translate(2304, 31)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserController">
+<g transform="translate(8, 8)" fill="#33322E" data-name="UserController">
+
+</g>
+</g>
+<g transform="translate(2304, 39)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserController">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="UserController">
+<text x="0.0" y="13.5" stroke="none" data-name="UserController">+RegisterUser(): Promise&lt;void&gt;</text>
+<text x="0.0" y="28.5" stroke="none" data-name="UserController">+LogIn(): Promise&lt;void&gt;</text>
+<text x="0.0" y="43.5" stroke="none" data-name="UserController">+FindUsers(): Promise&lt;void&gt;</text>
+<text x="0.0" y="58.5" stroke="none" data-name="UserController">+UpdateUserById(): Promise&lt;void&gt;</text>
+<text x="0.0" y="73.5" stroke="none" data-name="UserController">+DeleteUserById(): Promise&lt;void&gt;</text>
+<text x="0.0" y="88.5" stroke="none" data-name="UserController">+GetUserByQuery(): Promise&lt;void&gt;</text>
+<text x="0.0" y="103.5" stroke="none" data-name="UserController">+FindUserByID(): Promise&lt;void&gt;</text>
+
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>

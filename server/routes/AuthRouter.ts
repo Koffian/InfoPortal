@@ -2,9 +2,9 @@ import { Router } from "express"
 import { controller } from "../controllers/UserController"
 import registrationMiddleware from "../middleware/RegistrationMiddleware"
 
-const router = Router()
+const authRouter = Router()
 
-router.post("/registration", registrationMiddleware, controller.RegisterUser)
-router.post("/login", controller.LogIn)
+authRouter.post("/registration", registrationMiddleware, controller.RegisterUser)
+authRouter.post("/login", controller.LogIn)
 
-export {router as authRouter}
+export {authRouter as authRouter}
